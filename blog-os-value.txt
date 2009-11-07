@@ -1,0 +1,21 @@
+Participation in the open source gift economy
+
+Programmers should not use open source "for free". If you are using open source code, you need to be thinking about your contribution back to the economy. Open source is a gift economy, and can only flourish with participation. While there is no legal or expected obligation for using open source code, there is an ethical duty to contribute to the health of the economy which you are benefiting from. The type of contribution you can make varies depending on what skills you can offer. Patches, documentation, advocacy, feedback, money - at least one of these is open to anyone (at a basic level) no matter what your level of competency, even to non-programmers. The most computer illiterate can still talk something up to his friends!
+
+Programmers, at the opposite end of the spectrum, have an even greater ethical duty to contribute due to the dramatically lower cost options available to us. It is easy for us to give quick, specific, helpful feedback to many projects due to our understanding of the technical domain. Indeed, the cost can even be negative - I know many programmers (myself included) who have not only had their projects improved by releasing them open source, but have benefited dramatically from the social network and standing that this creates. In this case, we not only have an ethical motivation to contribute, but a selfish one as well!
+
+Mandating a contribution back to every project you use may seem onerous, and I'd agree. The beauty of a gift economy is that you only need to contribute back to the system as a whole, rather than specific projects. A gift economy allows (encourages!) you to create value for needy projects that you only tangentially use, or to add value by releasing your own code. As opposed to a barter system, which is a direct exchange of value, the open source gift economy works without this reciprocracy. You scratch my back, I'll scratch someone else's. This allowance makes it almost trivial to meet your ethical responsibility. It certainly isn't a chore. Write some documentation, publish some code, talk about your latest find down at the pub. You'll be creating a richer experience for everyone, including yourself.
+
+What have you shared lately?
+
+
+
+
+
+
+
+
+
+
+A quick aside on money. There are two ways to create value with money. The most direct is sponsoring development - a comparatively expensive but low involvement option. More subtle is the value created by a smaller donation, as it if often disproportionate (or indeed unrelated) to the amount. $5 is a fraction of what a programmer may earn in an hour, but in this case the value is motivational. A donation serves as powerful validation of the work - for someone to go to the effort of sending money unasked for is a clear signal of the value they are being provided with. Indeed, even an email as simple as "hey I'm using this and it's great" is worthwhile.
+
