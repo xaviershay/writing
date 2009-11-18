@@ -1,0 +1,17 @@
+There are 3 questions I want science to answer about my food: will it kill me, will it make me fat, will it make me run fast? They've really tried, these scientists, the problem is that they keep finding different answers [1]. Nutritional studies are hard - you rarely get a decent control group, tens of confounding factors (smoking, alcohol, etc...), and establishing any link beyond correlation is startingly difficult. It's an uphill battle, but there isn't a confounding factor math doesn't want to have a crack at, and they've run enough surveys that they can at least give me guidance in my food choices.
+
+First up: death. The hardest study of all - not even uni students can be suckered into that experiment. Instead, scientists take a survey of as many people they can, then keep tabs on them as long as possible. Ideally until some of them die, as morbid that sounds. "42" on steroids. Divide them up into your buckets (meat eater, vegan), then throw the aforementioned math at the data to make it to smoking, beers after work, and the idle-sunday-where-I-should-not-have-just-watched-dvds-all-day. I don't actually know how this works, but it all sounds very clever. Then out the other end comes your death ratios. You're 20% more likely to die on a Sunday if you eat fish every other week.
+
+As you imagine, these large scale studies get pretty expensive, and as a result, are somewhat rare. Not to worry. Right on cue, science comes to the rescue with an ingenius device called a meta-study. Rather than doing any new surveying, they look at all the existing research and try and generalize from that. In 1999, three researchers from X did just this and summarized 5 nutrional surveys in what is to this date the largest survey of how a western diet can kill you.
+
+This is still largely useless to me though - the vegan sample group was a measly _17_ people, and the 0.74 figure comes with such a large 95% confidence interval (0.46 - 1.21!) that it doesn't really tell you anything. Given the downward trend as animal products are eliminated though, I reckon my odds are still fairly good.
+
+Athletic performance isn't a priority for many, but it's a topic I'm particulary interested in. Science does let me down a bit here - there are a few focused experiments, but overall (to quote the AIS) "To date, studies have failed to examine the true benefit, if any, of a vegetarian diet on exercise performance." Actually the full AIS article is good reading, most of the easily found literature is hosted on veg*n sites, which doesn't do much for its credibility. The AIS sound overly cautious to my ear, but I figure that's only because the author makes the assumption that anything outside of the standard vegetables are "alternatives" to be "explored", rather than a foundation of the diet.
+
+Due to the extremely low prevalence of vegans in the greater population, you can't hardly expect to find many in any specialized sub group.
+Scott Jurek, an ultramarathoner, and Brendan Brazier, are both high level
+The AIS says "
+
+
+[1] Normally depending on who paid them, but that's a different story
+[2] This claim is possibly false, though I'm sure you'll agree it's still pretty big

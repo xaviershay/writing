@@ -1,0 +1,143 @@
+Herein is described a method for full stack testing "CloudKit":http://getcloudkit.com/ apps. The same techniques could easily be applied to other rack web application or framework, which is pretty much all the ruby ones these days ("rails":http://rubyonrails.org/, "sinatra":http://www.sinatrarb.com/, "pancake":http://github.com/hassox/pancake, etc...)
+
+There are two external services that make up our stack:
+* CloudKit application
+* OpenID server
+
+Both of these are rack applications, so we can start them up using the same method in our spec helper.
+
+--- Ruby
+require 'spec'
+require 'pathname'
+require Pathname(__FILE__).dirname + 'support/application_server'
+require Pathname(__FILE__).dirname + 'support/tcp_socket'
+
+TEST_PORTS = {
+  :app    => 9293,
+  :openid => 9294
+}
+
+$servers = nil
+Spec::Runner.configure do |config|
+  config.before(:all) do
+    $servers ||= Support::ApplicationServer.multi_boot(
+      {
+        :config    => File.expand_path(Dir.pwd + '/config.ru'),
+        :port      => TEST_PORTS[:app],
+        :daemonize => true
+      },
+      {
+        :config    => File.expand_path(Dir.pwd + '/spec/support/rack_my_id.rb'),
+        :port      => TEST_PORTS[:openid],
+        :daemonize => true
+      }
+    )
+  end
+end
+---
+
+You need some support files - the first two are based heavily on code from webrat, the latter is a dead simple OpenID server that I wrote specifically for testing:
+* "application_server.rb":http://gist.github.com/237652
+* "tcp_socker.rb":http://gist.github.com/237652
+* "rack_my_id.rb":http://github.com/xaviershay/rack-my-id
+
+A global variable is required here, since @before(:all)@ in rspec runs once per describe block, rather than once per test run. An @at_exit@ hook is used to shutdown the services after the test run.
+
+You need a way of resetting your data between test runs. The default @CloudKit::MemoryTable@ does not provide a mechanism for this - any deleted resource will exist in the version history of that resource (and will respond with a 410 rather than 404). By subclassing @MemoryTable@, we can provide a @purge@ method that does what we need:
+
+--- Ruby
+# A custom storage adapter that allows a total purge of a collection
+# This is handy in test mode to clear out data between specs
+class PurgeableTable < CloudKit::MemoryTable
+  # Remove all resources in a collection.
+  # Unlike a normal delete, which versions the resource (and sets up a 410 response),
+  # this method removes all trace of the resource (it will 404).
+  #
+  # Example:
+  #   CloudKit.setup_storage_adapter(adapter = PurgeableTable.new)
+  #   adapter.purge('/items')
+  def purge(collection)
+    query {|q|
+      q.add_condition('collection_reference', :eql, collection)
+    }.each do |item|
+      @hash.delete(@keys.delete(item[:pk]))
+    end
+  end
+end
+---
+
+Since we'll be testing the CloudKit app from a separate process, we also need a way of triggering a purge. An easy way is some custom rack middleware that provides a URL we can hit to reset the app. Clearly, we only want to enable this in test mode.
+
+--- Ruby
+class ResetApp
+  def initialize(app, options = {})
+    @app = app
+    @options = options
+  end
+
+  def call(env)
+    request = Rack::Request.new(env)
+    if request.path == '/test_reset' && request.request_method == 'POST'
+      @options[:adapter].purge('/items')
+      return Rack::Response.new([], 200).finish
+    else
+      @app.call(env)
+    end
+  end
+end
+---
+
+--- Ruby
+# config.ru
+CloudKit.setup_storage_adapter(adapter = PurgeableTable.new)
+
+if ENV["RACK_ENV"] == 'test'
+  use ResetApp, :adapter => adapter
+end
+---
+
+Now all the infrastructure is set up, we can test the CloudKit app using familiar ruby HTTP libraries:
+
+--- Ruby
+require 'httparty'
+require 'mechanize'
+require 'json'
+require 'oauth'
+
+describe 'OAuth + OpendID' do
+  include HTTParty
+  base_uri "localhost:#{TEST_PORTS[:app]}"
+
+  before(:each) do
+    HTTParty.post("/test_reset").code.should == 200
+  end
+
+  specify 'Registering for an oauth token' do
+    @consumer = OAuth::Consumer.new('cloudkitconsumer','',
+      :site               => "http://localhost:#{TEST_PORTS[:app]}",
+      :authorize_path     => "/oauth/authorization",
+      :access_token_path  => "/oauth/access_tokens",
+      :request_token_path => "/oauth/request_tokens"
+    )
+    @request_token = @consumer.get_request_token
+
+    agent = WWW::Mechanize.new
+    page = agent.get(@request_token.authorize_url)
+    login_form = page.forms.first
+    login_form.field_with(:name => "openid_url").value = "localhost:#{TEST_PORTS[:openid]}"
+    page = agent.submit(login_form)
+
+    oauth_form = page.forms.first
+    page = agent.submit(oauth_form, oauth_form.button_with(:value => "Approve"))
+
+    # Get access token
+    @access_token = @request_token.get_access_token
+
+    # Update an item
+    result = @access_token.put("/items/12345", {:name => "Hello"}.to_json)
+    result.code.should == "201"
+  end
+end
+---
+
+There's a lot of code and not much supporting text here. I'm hoping it all just clicks together pretty easy. Hit me up with any questions.
