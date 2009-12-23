@@ -1,0 +1,35 @@
+Hello
+
+There was bit of twitter interest in this today so here I am fleshing out the concept.
+
+I'm thinking about running some professional training on database related topics, specifically aimed towards rails programmers. I don't see these issues talked about much in the ecosphere, probably because they can be hard, which is a shame because it's really important stuff for any commercial site.
+
+Aside from my personal interest in the topic, I've dealt (and continue to deal!) with this topic a lot in industry, and feel it's stuff you really need to know as a professional developer.
+
+In my experience the hairier topics can be difficult to grasp just from a lecture, so the format would be a combination of theory matched with practical rails examples, run over a couple of nights early in 2010, with notes and exercises and all that jazz to take home. I'd charge a couple hundred bucks, money back if you don't find it valuable.
+
+Of course this is only worthwhile if people are interested in it. If that's you, please reply (privately if you wish) and I'll keep you in the loop. A few questions, if you'd be so kind:
+
+1) How do these topics sound? Anything missing? Anything too mundane?
+Data Integrity
+- DB level constraints
+- Key design
+- App level concerns
+
+Concurrency
+- Locking
+- optimistic vs pessimistic
+- Isolation levels
+
+DB Design
+- Transactional vs Reporting DBs
+- Performance considerations
+- Data warehouses
+- How to evaluate tech? MySQL? Postgresql? Oracle? CouchDB? Cognos?
+
+2) Format OK? Would a weekend be better?
+3) Would you prefer a different presenter? Am I too boring?
+4) Could you bring your own laptop?
+5) What city are you in?
+
+Xavier

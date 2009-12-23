@@ -1,0 +1,6 @@
+You said something yesterday about twitter being 10x our size.
+I image that figure does *not* include their API traffic, which is much larger than their web traffic (by a factor of many times, I believe), and would not be included in sources such as Alexa.
+
+That matches my gut feeling better.
+
+Xav
