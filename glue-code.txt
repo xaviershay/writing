@@ -1,0 +1,23 @@
+Testing Glue Code
+
+"db2s3":http://github.com/xaviershay/db2s3 combines together 3 external dependencies - your database, the filesystem, and Amazon's S3 service. It has 1 conditional in the main code path (and it's not even an important one). The classic unit testing approach of "stub everything" provides little benefit.
+
+Unit testing is good for ensuring complex code paths execute properly, that edge cases are properly explored, and for answering the question "what broke?". For trivial glue code, none of these are of particular benefit. There are no complex code paths or edge cases, and it will be quickly obvious what broke. In fact, the most likely thing to "break" (or change) over time isn't your code, but the external services it is sticking together, which stubs cannot protect you from. Considering the high relative cost of stubbing out all your dependencies, unit testing becomes an expensive way of testing something quite simple.
+
+For glue code, integration tests are the best solution. Glue code needs to stick, and integration tests ensures that it does. Here is the only test that matters from db2s3:
+
+--- Ruby
+it 'can save and restore a backup to S3' do
+  db2s3 = DB2S3.new
+  load_schema
+  Person.create!(:name => "Baxter")
+  db2s3.full_backup
+  drop_schema
+  db2s3.restore
+  Person.find_by_name("Baxter").should_not be_nil
+end
+---
+
+This test costs money to run since it hits the live S3 service, but only in the academic sense. The question you need to ask is "would I pay one cent to have confidence my backup solution works?"
+
+Always remember why your are testing. *Unit tests are a focussed tool, and not always necessary.*

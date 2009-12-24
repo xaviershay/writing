@@ -1,0 +1,61 @@
+Hello, so I've been thinking about a swing event. I call it 'LindyFringe'.
+It's not complete yet, but it's also not something I can't make work by myself.
+
+LindyFringe is an event aimed at experienced dancers. It's main goal is inspiration. There are no workshops/teachers in the traditional sense - everyone is both a teacher and a student. It gives space to work on whatever you want - chorey, jams, styling - in collaboration with others. Also, people can share knowledge about dancing related topics that isn't necessarily steps/technique in more of a lecture format rather than on the dance floor (see below for examples).
+
+Anyway here are some notes I've made:
+
+= Background
+This idea came from thinking about two successful weekend events we have on the coding scene:
+
+== RubyFringe Conference
+- Different from traditional ruby conferences (ruby is a programming language I use at work)
+  - Focussed on speakers, not topics
+  - People spoke about philosophy, jazz, lifestyle - anything that wasn't directly programming
+  - Talks were more "here's how I think about" rather than "how to".
+
+- Focus on getting attendees communicating
+  - One stream, so everyone was in the same place
+  - "Wife stream" - kept partners happy with tours so attendees didn't have to worry about them
+  - Events outside of talks (parties)
+
+== RailsCamp
+- Informal, small event (~30 people)
+- Let's just go somewhere for a weekend and hack on projects
+- No internet
+  - Forces communication, you need to ask questions
+
+- Butcher paper schedule, sign yourself up for a presentation
+- Non coding activities 
+  - Guitar hero
+  - Beer
+  - Feeds back into coding (guitar hero scoreboard was made one camp)
+
+- Spirit of cooperation, no 'teachers', everyone brings something to offer  
+
+= LindyFringe (proposed)
+
+Differences from coding events
+- Hard to work on dance for hours at a time (unlike coding
+- You can social dance for hours
+  - But we have plenty of events for this
+- Using space is harder, need more than just your laptop
+
+
+Cool things
+- Collaboration is particulary awesome, can encourage this
+  - Chorey pong (I start with something simple, you morph it, then I morph it, etc...)
+  - Mutant chorey (two group make up something to the same phrase, a third group merges the two togethers
+
+- Workshops always presented in the context of a dance floor
+  Miss out on some interesting 'non-core' topics - Peter's history talk in Perth was awesome
+
+  Ideas just off the top of my head:
+  - Xavier on rhythm
+  - Xavier on memory
+  - Xavier on fitness
+  - Loz/Shob on chorey
+  - Scott talking about anything
+  - Claudia on dancing goals (she gave a similar thing at brats last year)
+  - Matt/Keith on collecting music
+  - Sarah/Anthony on praticising aerials
