@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Understanding the Mathematical Syntax of Small-step Operational Semantics</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          
+          <h1>Understanding the Mathematical Syntax of Small-step Operational Semantics</h1>
+<p><em>This writing was inspired by Chapter 2 of the excellent book <a href="http://computationbook.com/">Understanding
+Computation</a>. It is available free online, and
+is a fine piece of writing. My intent here is to introduce the mathematics
+that the book leaves as an exercise to the reader, and to further explore the
+fascinating world of small-step semantics.</em></p>
+<p>Small-step semantics is one way (among many) to rigorously define how a
+program should execute, including how and when expressions are evaluated, how
+the environment is manipulated, and so on.</p>
+<p>This chapter introduces a fairly standard mathematical notation devised by
+Gordon Plotkin in 1981 for expressing small-step semantics. It looks scary if
+you are not a mathematician, but don&#39;t worry! We&#39;ll work through it in small
+steps of our own.</p>
+<p>A program can be considered as the pairing of an <em>expression</em> and an
+<em>environment</em>. The idea of small-step semantics is to repeatedly &quot;reduce&quot; a
+program by applying tiny transformations (<em>rules</em>) that modify either the
+expression, the environment, or both, until a program is reached that cannot
+be reduced any further. This is a useful way of describing a programming
+language in an umambiguous manner.</p>
+<p>Let&#39;s explore this concept with Ruby. To make things more readable in the
+code that follows, <code>[]</code> is aliased to <code>new</code> for all classes.</p>
+
+          
+            <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Class</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">[]</span><span class="params">(*args)</span>;</span> new(*args) <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+          
+        
+
+        
+      </div>
+
+      
+        
+        <p>Now consider a program that consists of a single constant number and an empty
+environment.  This is atomic, and cannot be reduced.</p>
+
+        
+          <div class='highlight'><pre><span class="constant">Number</span> = <span class="constant">Struct</span>.new(<span class="symbol">:value</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span>       value.to_s <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">inspect</span>;</span>    <span class="string">"«<span class="subst">#{<span class="keyword">self</span>}</span>»"</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">reducible?</span>;</span> <span class="keyword">false</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+exp, env = <span class="constant">Number</span>[<span class="number">10</span>], {} <span class="comment"># =&gt; [«10», {}]</span></pre></div>
+        
+      
+        
+        <p>Not particularly interesting, and so far no math! Let&#39;s create an expression
+type that can be reduced: addition.</p>
+
+        
+          <div class='highlight'><pre><span class="constant">Add</span> = <span class="constant">Struct</span>.new(<span class="symbol">:left</span>, <span class="symbol">:right</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span>       <span class="string">"%s + %s"</span> % [left, right] <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">inspect</span>;</span>    <span class="string">"«<span class="subst">#{<span class="keyword">self</span>}</span>»"</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">reducible?</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">reduce</span><span class="params">(env)</span></span>
+    [<span class="constant">Number</span>.new(left.value + right.value), env, <span class="symbol">:addition</span>]
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+exp, env    = <span class="constant">Add</span>[<span class="constant">Number</span>[<span class="number">1</span>], <span class="constant">Number</span>[<span class="number">2</span>]], {} <span class="comment"># =&gt; [«1 + 2», {}]</span>
+exp, env, <span class="number">_</span> = exp.reduce(env)               <span class="comment"># =&gt; [«3», {}, :addition]</span></pre></div>
+        
+      
+        
+        <p>An addition reduces to a number, also returning the particular transformation
+step that was used. We can define this more explicitly as a &quot;rule&quot;. A rule
+contains a check for whether it should be applied to the given expression,
+and the actual logic to actually transform it if so.</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Add</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span></span>
+    [ <span class="constant">AddValues</span>[<span class="keyword">self</span>] ]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">reduce</span><span class="params">(env)</span></span>
+    rule = <span class="keyword">self</span>.<span class="keyword">class</span>.rules.detect {|r| r.apply?(<span class="keyword">self</span>) }
+    rule.apply(<span class="keyword">self</span>, env) &lt;&lt; rule
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">AddValues</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(*args)</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(add, env)</span></span>
+    [<span class="constant">Number</span>[add.left.value + add.right.value], env]
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <p>More code for the same output, but now a list of rules for the system - our
+operational semantics - can be printed.</p>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">format_rule</span><span class="params">(rule)</span></span>
+  rule.<span class="class"><span class="keyword">class</span>
+<span class="title">end</span></span>
+
+<span class="function"><span class="keyword">def</span> <span class="title">print_all_rules</span></span>
+  <span class="constant">Add</span>.rules.each <span class="keyword">do</span> |rule|
+    puts format_rule(rule)
+  <span class="keyword">end</span>
+  puts
+<span class="keyword">end</span>
+print_all_rules</pre></div>
+        
+      
+        
+        <pre><code>AddValues</code></pre>
+<p>These rules are what Plotkin (back in 1981) devised a consistent notation
+for. The add values rule can be expressed as a transition from one expression
+and environment to another.</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Add</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">labels</span>;</span>    [<span class="symbol">:x</span>, <span class="symbol">:y</span>] <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">prototype</span>;</span> new(*labels) <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">AddValues</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span>   <span class="string">'&lt;%s, σ&gt; → &lt;z, σ&gt;'</span>             % expression_type.prototype <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">'if z is the sum of %s and %s'</span> % expression_type.labels <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="function"><span class="keyword">def</span> <span class="title">format_rule</span><span class="params">(rule)</span></span>
+  <span class="keyword">if</span> rule.antecedent.empty?
+    <span class="string">"%s %s"</span> % [rule, rule.clause]
+  <span class="keyword">else</span>
+    <span class="string">"%s : %s %s"</span> % [rule.antecedent, rule, rule.clause]
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+print_all_rules</pre></div>
+        
+      
+        
+        <pre><code>&lt;x + y, σ&gt; → &lt;z, σ&gt; if z is the sum of x and y</code></pre>
+<p>In a sentence: &quot;<code>x + y</code> reduces to the sum of <code>x</code> and <code>y</code> and does not change
+the environment.&quot; (σ = environment because math.)</p>
+<p>Now we can continually reduce an expression in tiny steps, printing out the
+exact mathematical rule that was applied at each step.</p>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">print_line</span><span class="params">(exp, env, rule)</span></span>
+  puts <span class="string">"%15s | %s"</span> % [exp.inspect + <span class="string">', '</span> + env.inspect, rule]
+<span class="keyword">end</span>
+
+<span class="function"><span class="keyword">def</span> <span class="title">evaluate</span><span class="params">(exp, env = {})</span></span>
+  print_line exp, env, <span class="keyword">nil</span>
+  <span class="keyword">while</span> exp.reducible?
+    exp, env, rule = exp.reduce(env)
+    print_line exp, env, format_rule(rule)
+  <span class="keyword">end</span>
+<span class="keyword">rescue</span> =&gt; e
+  puts e.message
+<span class="keyword">ensure</span>
+  puts
+<span class="keyword">end</span>
+
+evaluate <span class="constant">Add</span>[ <span class="constant">Number</span>[<span class="number">1</span>], <span class="constant">Number</span>[<span class="number">2</span>] ]</pre></div>
+        
+      
+        
+        <pre><code>«1 + 2», {} |
+    «3», {} | &lt;x + y, σ&gt; → &lt;z, σ&gt; if z is the sum of x and y</code></pre>
+<p>Our operational semantics now contains only one rule: that of
+addition. What happens in the following case?</p>
+
+        
+          <div class='highlight'><pre>evaluate <span class="constant">Add</span>[ <span class="constant">Number</span>[<span class="number">1</span>], <span class="constant">Add</span>[ <span class="constant">Number</span>[<span class="number">2</span>], <span class="constant">Number</span>[<span class="number">3</span>] ] ]</pre></div>
+        
+      
+        
+        <pre><code>«1 + 2 + 3», {} |
+undefined method `value&#39; for «2 + 3»:Add</code></pre>
+<p>An error! We have not defined a rule that can handle this case yet. It may
+seem obvious what the correct behaviour is, but small-step semantics is all
+about unambiguously defining even the tiniest step in our program, so we need
+to explictly answer the quest: What should happen if one side of the addition
+is an expression rather than a number?</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Add</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span></span>
+    [
+      <span class="constant">ReduceArgument</span>[<span class="keyword">self</span>, <span class="number">0</span>],
+      <span class="constant">ReduceArgument</span>[<span class="keyword">self</span>, <span class="number">1</span>],
+      <span class="constant">AddValues</span>[<span class="keyword">self</span>]
+    ]
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">ReduceArgument</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>, <span class="symbol">:n</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(exp)</span>;</span> exp[n].reducible?  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    r =  exp.each.map.with_index {|x, i|
+      i == n ? x.reduce(env)[<span class="number">0</span>] <span class="symbol">:</span> x
+    }
+    [exp.<span class="keyword">class</span>.new(*r), env]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span></span>
+    label = expression_type.labels[n]
+    <span class="string">"&lt;%s, σ&gt; → &lt;%s, σ&gt;"</span> % [label, <span class="string">"<span class="subst">#{label}</span>'"</span>]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">'&lt;%s, σ&gt; → &lt;%s, σ&gt;'</span> % [
+      expression_type.prototype,
+      expression_type.new(*expression_type.labels.map.with_index {|label, i|
+        i == n ? <span class="string">"<span class="subst">#{label}</span>'"</span> <span class="symbol">:</span> label
+      })
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">Add</span>[ <span class="constant">Number</span>[<span class="number">1</span>], <span class="constant">Add</span>[ <span class="constant">Number</span>[<span class="number">2</span>], <span class="constant">Number</span>[<span class="number">3</span>] ] ]</pre></div>
+        
+      
+        
+        <pre><code>«1 + 2 + 3», {} |
+    «1 + 5», {} | &lt;y, σ&gt; → &lt;y&#39;, σ&gt; : &lt;x + y, σ&gt; → &lt;x + y&#39;, σ&gt;
+        «6», {} | &lt;x + y, σ&gt; → &lt;z, σ&gt; if z is the sum of x and y</code></pre>
+<p>There is now a middle step that evaluates the nested addition. In a sentence,
+the mathematical notation translates to: &quot;if expression <code>y</code> can reduce to
+<code>y&#39;</code> without changing the environment, then <code>x + y</code> reduces to <code>x + y&#39;</code> and
+does not change the environment.&quot; The &quot;does not change the environment&quot;
+clause (remember σ = environment) is redundant at the moment, but it will
+become useful later.</p>
+<p>In this case we have chosen to first try and evaluate the left side of the
+addition, then the right. We will see examples later on that would result in
+a different end state if the right side was evaluated first - this is why
+spelling out even tiny assumptions is important!</p>
+<p>We have been using, and will continue to use, a condensed horizontal form of
+the mathematical notation since is much easier to include beside sample
+executions. In case you come across it in the wild, here is the complete
+operational semantics for our addition engine, using a more vertical
+formatter.</p>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">print_rule_vertical</span><span class="params">(rule)</span></span>
+  puts rule.antecedent.to_s
+  puts <span class="string">"―"</span> * rule.to_s.length + <span class="string">' '</span> + rule.clause
+  puts rule.to_s
+  puts
+<span class="keyword">end</span>
+
+<span class="constant">Add</span>.rules.each {|rule| print_rule_vertical(rule) }</pre></div>
+        
+      
+        
+        <pre><code>&lt;x, σ&gt; → &lt;x&#39;, σ&gt;
+――――――――――――――――――――――――
+&lt;x + y, σ&gt; → &lt;x&#39; + y, σ&gt;
+
+&lt;y, σ&gt; → &lt;y&#39;, σ&gt;
+――――――――――――――――――――――――
+&lt;x + y, σ&gt; → &lt;x + y&#39;, σ&gt;
+
+
+――――――――――――――――――― if z is the sum of x and y
+&lt;x + y, σ&gt; → &lt;z, σ&gt;</code></pre>
+<p>In the next section we will introduce environment modification to our
+semantics and see where that leads us.</p>
+
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>
