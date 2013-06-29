@@ -1,4 +1,4 @@
-# # Understanding the Mathematical Syntax of Small-step Operational Semantics
+# # The Mathematical Syntax of Small-step Operational Semantics
 #
 # _This writing was inspired by Chapter 2 of the excellent book [Understanding
 # Computation](http://computationbook.com/). It is available free online, and
