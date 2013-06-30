@@ -35,6 +35,7 @@ Number = Struct.new(:value) do
   def to_s;       value.to_s end
   def inspect;    "«#{self}»" end
   def reducible?; false end
+  def reduce(env); [self, env] end
 end
 
 exp, env = Number[10], {} # => [«10», {}]
@@ -70,7 +71,7 @@ class Add
 end
 
 AddValues = Struct.new(:expression_type) do
-  def apply?(*args); true end
+  def apply?(*_); true end
   def apply(add, env)
     [Number[add.left.value + add.right.value], env]
   end
@@ -130,8 +131,11 @@ end
 
 def evaluate(exp, env = {})
   print_line exp, env, nil
-  while exp.reducible?
+  last = nil
+  while true
+    last = [exp, env]
     exp, env, rule = exp.reduce(env)
+    break if last == [exp, env]
     print_line exp, env, format_rule(rule)
   end
 rescue => e
