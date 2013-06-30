@@ -287,7 +287,7 @@ evaluate Add[ WriteVariable[:a, Number[3]], ReadVariable[:a] ]
 #       «3», a:«3»  |
 #     «3 + a»       | key not found: :a
 
-# It doesn't work! As alluded to early, add is using the returned value, but
+# It doesn't work! As alluded to earlier, add is using the returned value, but
 # throwing away the new environment. That is why we needed to implement a new
 # reduce with environment rule. Small-step operational semantics does not let
 # anything slip through the cracks! Updating add to use the new reduce with

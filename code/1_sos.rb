@@ -58,8 +58,7 @@ end
 
 Identity = Class.new
 
-Number = Struct.new(:value) do
-  def to_s;       value.to_s end
+module Value
   def inspect;    "«#{self}»" end
   def reducible?; false end
   def reduce(env)
@@ -68,12 +67,25 @@ Number = Struct.new(:value) do
   end
 end
 
+Number = Struct.new(:value) do
+  include Value
+  def to_s; value.to_s end
+end
+
 Program[ Number[10], {} ] # => «10»
 
 # Not particularly interesting, and so far no math! Let's create an expression
 # type that can be reduced: addition.
 Add = Struct.new(:left, :right) do
-  def to_s;       "%s + %s" % [left, right] end
+  def to_s
+    [left, right].map {|x|
+      if x.respond_to?(:members) && x.members.size > 1
+        "(%s)"
+      else
+        "%s"
+      end % x
+    }.join(' + ')
+  end
   def inspect;    "«#{self}»" end
   def reducible?; true end
   def reduce(env)
@@ -191,14 +203,13 @@ def evaluate(exp, env = {})
 
     program = reduction.to
   end
-
+rescue => e
+  lines << [program.inspect, e.message]
+ensure
   widest_column_size = lines.map {|x| x[0].length }.max
   lines.each do |line|
     puts "%-#{widest_column_size}s | %s" % line
   end
-rescue => e
-  puts e.message
-ensure
   puts
 end
 
@@ -231,8 +242,7 @@ evaluate Add[ Number[1], Number[2] ]
 # addition. What happens in the following case?
 
 evaluate Add[ Number[1], Add[ Number[2], Number[3] ] ]
-#     «1 + 2 + 3» |
-#     undefined method `value' for «2 + 3»:Add
+#     «1 + (2 + 3)» | undefined method `value' for «2 + 3»:Add
 
 # An error! We have not defined a rule that can handle this case yet. It may
 # seem obvious what the correct behaviour is, but small-step semantics is all
@@ -287,11 +297,11 @@ ReduceArgument = Struct.new(:expression_type, :n) do
 end
 
 evaluate Add[ Number[1], Add[Number[2], Number[3]] ]
-#     «1 + 2 + 3» | <y, σ> → <y', σ> : <x + y, σ> → <x + y', σ>
-#       «2 + 3»   | <x + y, σ> → <z, σ> if z is the sum of x and y
-#       «5»       |
-#     «1 + 5»     | <x + y, σ> → <z, σ> if z is the sum of x and y
-#     «6»         |
+#     «1 + (2 + 3)» | <y, σ> → <y', σ> : <x + y, σ> → <x + y', σ>
+#       «2 + 3»     | <x + y, σ> → <z, σ> if z is the sum of x and y
+#       «5»         |
+#     «1 + 5»       | <x + y, σ> → <z, σ> if z is the sum of x and y
+#     «6»           |
 
 # There is a new first step that reduces the nested addition, with some new
 # notation. In a sentence, it translates to: _if expression `y` can reduce to
