@@ -191,6 +191,53 @@ wrong = ->() { }
 right = [].map(&:length)
 wrong = [].map {|x| x.length }
 
+# ## Assignment
+#
+# * Align along equals sign.
+#   [⚙](https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb)
+
+a  = "right"
+ab = "right"
+
+a = "wrong"
+ab = "wrong"
+
+# * Prefer using instance variables rather than writer methods in
+#   constructors.
+
+class Right
+  attr_writer :x, :y
+
+  def initialize
+    @x = []
+    @y = []
+  end
+end
+
+class Wrong
+  attr_writer :x, :y
+
+  def initialize
+    self.x = []
+    self.y = []
+  end
+end
+
+# * Separate assignment from conditionals.
+
+right = true
+42 if right
+
+42 if wrong = true
+
+# * Only use parallel assignment for short variable names or when splitting the
+#   return value of a method.
+
+x, y = "right", 42
+long_name_one, long_name_two = right_method
+
+long_name_one, long_name_two = "wrong", 0
+
 # ## Arrays
 #
 # * Use a trailing comma on final entry of multi-line definitions.
