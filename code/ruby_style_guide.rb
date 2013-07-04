@@ -8,6 +8,9 @@
 # with themselves. Style upgrades should be in separate commits from behaviour
 # changes.
 #
+# The canonical URL for this document is
+# <a href="http://xaviershay.com/ruby-style-guide">http://xaviershay.com/ruby-style-guide</a>.
+#
 # ## Whitespace
 #
 # * No trailing whitespace.
