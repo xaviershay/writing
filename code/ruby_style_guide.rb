@@ -66,7 +66,7 @@ wrong = {
 # ## Line Length
 #
 # * 80 characters is good enough for anyone.
-# * Long URLs are exempt (though consider shortening them).
+# * Long URLs are exempt, though consider shortening them.
 # * Line up method arguments when they do not fit on one line.
 
 def right_method(long_param_one,
