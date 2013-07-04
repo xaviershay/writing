@@ -10,3 +10,11 @@ ul {
 .footer-link a {
   color: #aaa;
 }
+
+h2 a, h2 a:visited {
+  text-decoration: none
+}
+
+h2 a:hover {
+  text-decoration: underline
+}
