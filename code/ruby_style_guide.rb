@@ -1,9 +1,10 @@
 # # Ruby Style Guide
 #
 # The personal style guide of [Xavier Shay](http://xaviershay.com). Any
-# potential exceptions must be justified and documented. Code examples imply
-# more rules than are explicitly labeled. Rules that I often use editor
-# features or scripts to apply are notated with ⚙ and a link to details.
+# potential exceptions must be justified and documented. Code examples can be
+# revealed by clicking ↩ , and these imply more rules than are explicitly
+# labeled. Rules that I often use editor features or scripts to apply are
+# notated with ⚙ and a link to details.
 #
 # Older code bases should migrate to this style, rather than stay consistent
 # with themselves. Style upgrades should be in separate commits from behaviour
