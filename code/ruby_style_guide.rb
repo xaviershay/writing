@@ -66,7 +66,7 @@ wrong = {
 # ## Line Length
 #
 # * 80 characters is good enough for anyone.
-# * Long URLs are exempt (though consider shortening them).
+# * Long URLs are exempt, though consider shortening them.
 # * Line up method arguments when they do not fit on one line.
 
 def right_method(long_param_one,
@@ -313,6 +313,9 @@ def has_valid?; "wrong" end
 Example::Right
 WrongExample
 
+#
+# <div class='footer-link'><a href='https://github.com/xaviershay/writing/blob/master/code/ruby_style_guide.rb'>Source
+# for this document</a></div>
 # <script src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
 # <script src='../assets/style_guide.js'></script>
 # <link href='../assets/style_guide.css' rel='stylesheet'>
