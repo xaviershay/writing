@@ -11,7 +11,7 @@
 # changes.
 #
 # The canonical URL for this document is
-# <a href="http://xaviershay.com/ruby-style-guide">http://xaviershay.com/ruby-style-guide</a>.
+# <a id='canonical-link' href="http://xaviershay.com/ruby-style-guide">http://xaviershay.com/ruby-style-guide</a>.
 #
 # ## Arrays
 #
