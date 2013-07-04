@@ -2,6 +2,8 @@
 
 set -ex
 
+rm -Rf docs
+
 [[ ! "$(git status --porcelain 2>/dev/null)" = *\?\?* ]]
 
 git checkout gh-pages
