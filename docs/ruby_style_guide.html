@@ -24,21 +24,21 @@ with themselves. Style upgrades should be in separate commits from behaviour
 changes.</p>
 <p>The canonical URL for this document is
 <a href="http://xaviershay.com/ruby-style-guide"><a href="http://xaviershay.com/ruby-style-guide">http://xaviershay.com/ruby-style-guide</a></a>.</p>
-<h2>Whitespace</h2>
+<h2>Arrays</h2>
 <ul>
-<li>No trailing whitespace.
-<a href="https://github.com/xaviershay/dotfiles/blob/master/vimrc#L95">⚙</a></li>
-<li>Two space indentation.</li>
+<li>Use a trailing comma on final entry of multi-line definitions.</li>
 </ul>
 
           
-            <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span>
-  <span class="keyword">if</span> rand &lt; <span class="number">0</span>.<span class="number">5</span>
-    <span class="keyword">if</span> rand &gt; <span class="number">0</span>.<span class="number">5</span>
-      <span class="number">42</span>
-    <span class="keyword">end</span>
-  <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div>
+            <div class='highlight'><pre>right = [
+  <span class="number">1</span>,
+  <span class="number">2</span>,
+]
+
+wrong = [
+  <span class="number">1</span>,
+  <span class="number">2</span>
+]</pre></div>
           
         
 
@@ -48,272 +48,17 @@ changes.</p>
       
         
         <ul>
-<li>Align <code>if</code> blocks with left indent.</li>
+<li>Prefer <code>%w()</code> for construction of string arrays.</li>
 </ul>
 
         
-          <div class='highlight'><pre>right = <span class="keyword">if</span> rand &lt; <span class="number">0</span>.<span class="number">5</span>
-  <span class="number">0</span>
-<span class="keyword">else</span>
-  <span class="number">1</span>
-<span class="keyword">end</span>
-
-wrong = <span class="keyword">if</span> rand &lt; <span class="number">0</span>.<span class="number">5</span>
-          <span class="number">0</span>
-        <span class="keyword">else</span>
-          <span class="number">1</span>
-        <span class="keyword">end</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Align 1.8 style hashes along hash rocket.
-<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = {
-  <span class="string">'a'</span>   =&gt; <span class="number">1</span>,
-  <span class="string">'ab'</span>  =&gt; <span class="number">2</span>,
-  <span class="string">'abc'</span> =&gt; <span class="number">3</span>,
-}
-
-wrong = {
-  <span class="string">'a'</span> =&gt; <span class="number">1</span>,
-  <span class="string">'ab'</span> =&gt; <span class="number">2</span>,
-  <span class="string">'abc'</span> =&gt; <span class="number">3</span>,
-}</pre></div>
-        
-      
-        
-        <ul>
-<li>Align 1.9 style hashes along right-hand side.
-<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = {
-  <span class="symbol">a:</span>   <span class="number">1</span>,
-  <span class="symbol">ab:</span>  <span class="number">2</span>,
-  <span class="symbol">abc:</span> <span class="number">3</span>,
-}
-
-wrong = {
-  <span class="symbol">a:</span> <span class="number">1</span>,
-  <span class="symbol">ab:</span> <span class="number">2</span>,
-  <span class="symbol">abc:</span> <span class="number">3</span>,
-}</pre></div>
-        
-      
-        
-        <h2>Line Length</h2>
-<ul>
-<li>80 characters is good enough for anyone.
-<a href="http://vimdoc.sourceforge.net/htmldoc/change.html#gq">⚙</a></li>
-<li>Long URLs are exempt, though consider shortening them.</li>
-<li>Line up method arguments when they do not fit on one line.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right_method</span><span class="params">(long_param_one,
-                 long_param_two,
-                 long_param_three,
-                 long_param_four)</span></span>
-  <span class="number">42</span>
-<span class="keyword">end</span>
-
-<span class="function"><span class="keyword">def</span> <span class="title">wrong_method</span><span class="params">(long_param_one, long_param_two, long_param_three, long_param_four)</span></span>
-  <span class="number">42</span>
-<span class="keyword">end</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Squeeze multiline strings if you need to remove newlines.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>&lt;&lt;-<span class="constant">EOS</span>.strip.gsub(<span class="regexp">/\s+/</span>, <span class="string">' '</span>)
-  <span class="constant">But</span> we refuse to believe that the bank of justice is bankrupt. <span class="constant">We</span> refuse to
-  believe that there are insufficient funds <span class="keyword">in</span> the great vaults of opportunity
-  of this nation. <span class="constant">And</span> so we have come to cash this check, a check that will
-  give us upon demand the riches of freedom <span class="keyword">and</span> the security of justice.
-<span class="constant">EOS</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Use <code>sprintf</code> to interpolate variables into long strings.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = <span class="string">"%s thinks that %s should %s"</span> % [
-  long_variable_one,
-  long_variable_two,
-  long_variable_three
-]
-
-wrong = <span class="string">"<span class="subst">#{long_variable_one}</span> thinks that <span class="subst">#{long_variable_two}</span> should <span class="subst">#{long_variable_three}</span>"</span></pre></div>
-        
-      
-        
-        <ul>
-<li>One line per method for long chains.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = (<span class="number">1</span>..<span class="number">10</span>)
-  .map {|x| x + <span class="number">1</span> }
-  .select(&amp;<span class="symbol">:odd?</span>)
-
-wrong = (<span class="number">1</span>..<span class="number">10</span>).map {|x| x + <span class="number">1</span> }.select(&amp;<span class="symbol">:odd?</span>)</pre></div>
-        
-      
-        
-        <h2>Classes</h2>
-<ul>
-<li>Assign empty subclasses rather than inheriting.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="constant">Right</span> = <span class="constant">Class</span>.new(<span class="constant">StandardError</span>)
-<span class="class"><span class="keyword">class</span> <span class="title">Wrong</span> <span class="inheritance">&lt; <span class="parent">StandardError</span></span>;</span> <span class="keyword">end</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Assign struct subclasses rather than inheriting from them, so that they can
-be re-opened.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="constant">Right</span> = <span class="constant">Struct</span>.new(<span class="symbol">:value</span>) <span class="keyword">do</span>
-  <span class="function"><span class="keyword">def</span> <span class="title">squared</span>;</span> value * value <span class="keyword">end</span>
-<span class="keyword">end</span>
-
-<span class="class"><span class="keyword">class</span> <span class="title">Wrong</span> <span class="inheritance">&lt; <span class="parent">Struct</span></span>.<span class="title">new</span>(:<span class="title">value</span>)</span>
-  <span class="function"><span class="keyword">def</span> <span class="title">squared</span>;</span> value * value <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Alias <code>[]</code> to <code>new</code> for value objects.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = <span class="constant">Number</span>[<span class="number">3</span>]
-wrong = <span class="constant">Number</span>.new(<span class="number">3</span>)</pre></div>
-        
-      
-        
-        <h2>Methods</h2>
-<ul>
-<li>Use a single line for trivial methods.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span>;</span> <span class="variable">@right</span> ||= [] <span class="keyword">end</span>
-
-<span class="function"><span class="keyword">def</span> <span class="title">wrong</span></span>
-  <span class="variable">@right</span> ||= []
-<span class="keyword">end</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Use <code>_</code> for ignored arguments.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span><span class="params">(x, <span class="number">_</span>)</span>;</span> x <span class="keyword">end</span>
-<span class="function"><span class="keyword">def</span> <span class="title">wrong</span><span class="params">(x, y)</span>;</span> x <span class="keyword">end</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Use <code>*_</code> when all arguments are ignored.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span><span class="params">(*<span class="number">_</span>)</span>;</span> <span class="number">42</span> <span class="keyword">end</span>
-<span class="function"><span class="keyword">def</span> <span class="title">wrong</span><span class="params">(<span class="number">_</span>, <span class="number">_</span>)</span>;</span> <span class="number">42</span> <span class="keyword">end</span></pre></div>
-        
-      
-        
-        <h2>Blocks and Procs</h2>
-<ul>
-<li>No space between brace and parameters.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = [].map {|x| x }
-wrong = [].map { |x| x }</pre></div>
-        
-      
-        
-        <ul>
-<li>Use curly-braces when block is being chained.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = [].map {|x|
-  x == <span class="number">2</span>
-}.size
-
-wrong = [].map <span class="keyword">do</span> |x|
-  x == <span class="number">2</span>
-<span class="keyword">end</span>.size</pre></div>
-        
-      
-        
-        <ul>
-<li>Use stabby syntax with parenthesis.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = -&gt;(x) { x }
-wrong = -&gt; x { x }
-wrong = lambda {|x| x }</pre></div>
-        
-      
-        
-        <ul>
-<li>Omit parenthesis for zero-argument lambdas.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = -&gt;{ }
-wrong = -&gt;() { }</pre></div>
-        
-      
-        
-        <ul>
-<li>Prefer <code>Symbol#to_proc</code> where appicable.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = [].map(&amp;<span class="symbol">:length</span>)
-wrong = [].map {|x| x.length }</pre></div>
+          <div class='highlight'><pre>right = <span class="string">%w(apples oranges)</span>
+wrong = [<span class="string">'apples'</span>, <span class="string">'oranges'</span>]</pre></div>
         
       
         
         <h2>Assignment</h2>
 <ul>
-<li>Align along equals sign.
-<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
-</ul>
-
-        
-          <div class='highlight'><pre>a  = <span class="string">"right"</span>
-ab = <span class="string">"right"</span>
-
-a = <span class="string">"wrong"</span>
-ab = <span class="string">"wrong"</span></pre></div>
-        
-      
-        
-        <ul>
 <li>Prefer using instance variables rather than writer methods in
 constructors.</li>
 </ul>
@@ -364,31 +109,173 @@ long_name_one, long_name_two = <span class="string">"wrong"</span>, <span class=
         
       
         
-        <h2>Arrays</h2>
+        <h2>Blocks and Procs</h2>
 <ul>
-<li>Use a trailing comma on final entry of multi-line definitions.</li>
+<li>Use curly-braces when block is being chained.</li>
 </ul>
 
         
-          <div class='highlight'><pre>right = [
-  <span class="number">1</span>,
-  <span class="number">2</span>,
-]
+          <div class='highlight'><pre>right = [].map {|x|
+  x == <span class="number">2</span>
+}.size
 
-wrong = [
-  <span class="number">1</span>,
-  <span class="number">2</span>
-]</pre></div>
+wrong = [].map <span class="keyword">do</span> |x|
+  x == <span class="number">2</span>
+<span class="keyword">end</span>.size</pre></div>
         
       
         
         <ul>
-<li>Prefer <code>%w()</code> for construction of string arrays.</li>
+<li>Use stabby syntax with parenthesis.</li>
 </ul>
 
         
-          <div class='highlight'><pre>right = <span class="string">%w(apples oranges)</span>
-wrong = [<span class="string">'apples'</span>, <span class="string">'oranges'</span>]</pre></div>
+          <div class='highlight'><pre>right = -&gt;(x) { x }
+wrong = -&gt; x { x }
+wrong = lambda {|x| x }</pre></div>
+        
+      
+        
+        <ul>
+<li>Omit parenthesis for zero-argument lambdas.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = -&gt;{ }
+wrong = -&gt;() { }</pre></div>
+        
+      
+        
+        <ul>
+<li>Prefer <code>Symbol#to_proc</code> where applicable.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = [].map(&amp;<span class="symbol">:length</span>)
+wrong = [].map {|x| x.length }</pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>.()</code> to call.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = -&gt;{ }.()
+wrong = -&gt;{ }.call
+wrong = -&gt;{ }[]</pre></div>
+        
+      
+        
+        <h2>Classes</h2>
+<ul>
+<li>Assign empty subclasses rather than inheriting.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="constant">Right</span> = <span class="constant">Class</span>.new(<span class="constant">StandardError</span>)
+<span class="class"><span class="keyword">class</span> <span class="title">Wrong</span> <span class="inheritance">&lt; <span class="parent">StandardError</span></span>;</span> <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Assign struct subclasses so that they can be re-opened.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="constant">Right</span> = <span class="constant">Struct</span>.new(<span class="symbol">:value</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">squared</span>;</span> value * value <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">Wrong</span> <span class="inheritance">&lt; <span class="parent">Struct</span></span>.<span class="title">new</span>(:<span class="title">value</span>)</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">squared</span>;</span> value * value <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Alias <code>[]</code> to <code>new</code> for value objects.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = <span class="constant">Number</span>[<span class="number">3</span>]
+wrong = <span class="constant">Number</span>.new(<span class="number">3</span>)</pre></div>
+        
+      
+        
+        <ul>
+<li>Nest namespaced definitions.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Namespace</span></span>
+  <span class="class"><span class="keyword">class</span> <span class="title">Right</span>;</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">Namespace::Wrong</span>;</span> <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <h2>Conditionals</h2>
+<ul>
+<li>Only use ternary operator for very short conditionals. When in doubt,
+avoid.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = flag ? <span class="number">42</span> <span class="symbol">:</span> <span class="number">36</span>
+right = <span class="keyword">if</span> flag &amp;&amp; other_flag
+  long_name_one
+<span class="keyword">else</span>
+  long_name_two
+<span class="keyword">end</span>
+
+wrong = flag &amp;&amp; other_flag ? long_name_one <span class="symbol">:</span> long_name_two</pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>&amp;&amp;</code> and <code>||</code> in preference to <code>and</code> and <code>or</code>.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right <span class="keyword">if</span> a &amp;&amp; b
+wrong <span class="keyword">if</span> a <span class="keyword">and</span> b</pre></div>
+        
+      
+        
+        <h2>Dependencies</h2>
+<ul>
+<li>Explicitly require third-party code in each file it is used.</li>
+<li>Prefer constant stubbing when depending on code that you own.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">my_method</span>;</span> <span class="constant">MyCollaborater</span>.does_something <span class="keyword">end</span>
+
+it <span class="keyword">do</span>
+  collaborator = class_double(<span class="string">"MyCollaborator"</span>).as_stubbed_const
+  collaborator.should_receive(<span class="symbol">:does_something</span>)
+
+  my_method
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Prefer constructor or parameter injection when depending on code you do not
+own. When providing code to others, include fake versions of your classes.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">my_method</span><span class="params">(client = <span class="constant">Service::Client</span>)</span>;</span> client.echo(<span class="string">'hello'</span>) <span class="keyword">end</span>
+
+it <span class="keyword">do</span>
+  client = <span class="constant">Service::FakeClient</span>.new
+  my_method(client)
+
+  expect(client.echoes).to eq([<span class="string">'hello'</span>])
+<span class="keyword">end</span></pre></div>
         
       
         
@@ -458,70 +345,114 @@ wrong = {}[<span class="symbol">:a</span>] || <span class="number">0</span></pre
         
       
         
-        <h2>Regexes</h2>
+        <h2>Line Length</h2>
 <ul>
-<li>Make with <code>%r{}</code> when escaping of slashes would otherwise be required.</li>
+<li>80 characters is good enough for anyone.
+<a href="http://vimdoc.sourceforge.net/htmldoc/change.html#gq">⚙</a></li>
+<li>Long URLs are exempt, though consider shortening them.</li>
+<li>Line up method arguments when they do not fit on one line.</li>
 </ul>
 
         
-          <div class='highlight'><pre>right = %r{<span class="regexp">/some/path</span>}
-wrong = <span class="regexp">/\/some\/path/</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Use <code>\A</code> and <code>\z</code> rather than &#39;^&#39; and <code>$</code> for start and end of line
-matching.</li>
-</ul>
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right_method</span><span class="params">(long_param_one,
+                 long_param_two,
+                 long_param_three,
+                 long_param_four)</span></span>
+  <span class="number">42</span>
+<span class="keyword">end</span>
 
-        
-          <div class='highlight'><pre>right = <span class="string">"hello\nthere"</span> =~ <span class="regexp">/\Ahello\z/</span>
-wrong = <span class="string">"hello\nthere"</span> =~ <span class="regexp">/^hello$/</span></pre></div>
-        
-      
-        
-        <ul>
-<li>Use <code>String#[]</code> for extraction.</li>
-</ul>
-
-        
-          <div class='highlight'><pre>right = <span class="string">"http://example.com"</span>[%r{\<span class="constant">A</span>(http(s)?)<span class="symbol">://</span>}, <span class="number">1</span>]
-wrong = %r{(http(s)?)<span class="symbol">://</span>}.match(<span class="string">"http://"</span>)[<span class="number">1</span>]</pre></div>
-        
-      
-        
-        <h2>Dependencies</h2>
-<ul>
-<li>Explicitly require third-party code in each file it is used.</li>
-<li>Prefer constant stubbing when depending on code that you own.</li>
-</ul>
-
-        
-          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">my_method</span>;</span> <span class="constant">MyCollaborater</span>.does_something <span class="keyword">end</span>
-
-it <span class="keyword">do</span>
-  collaborator = class_double(<span class="string">"MyCollaborator"</span>).as_stubbed_const
-  collaborator.should_receive(<span class="symbol">:does_something</span>)
-
-  my_method
+<span class="function"><span class="keyword">def</span> <span class="title">wrong_method</span><span class="params">(long_param_one, long_param_two, long_param_three, long_param_four)</span></span>
+  <span class="number">42</span>
 <span class="keyword">end</span></pre></div>
         
       
         
         <ul>
-<li>Prefer constructor or parameter injection when depending on code you do not
-own. When providing code to others, include fake versions of your classes.</li>
+<li>Squeeze multiline strings if you need to remove newlines.</li>
 </ul>
 
         
-          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">my_method</span><span class="params">(client = <span class="constant">Service::Client</span>)</span>;</span> client.echo(<span class="string">'hello'</span>) <span class="keyword">end</span>
+          <div class='highlight'><pre>&lt;&lt;-<span class="constant">EOS</span>.strip.gsub(<span class="regexp">/\s+/</span>, <span class="string">' '</span>)
+  <span class="constant">But</span> we refuse to believe that the bank of justice is bankrupt. <span class="constant">We</span> refuse to
+  believe that there are insufficient funds <span class="keyword">in</span> the great vaults of opportunity
+  of this nation. <span class="constant">And</span> so we have come to cash this check, a check that will
+  give us upon demand the riches of freedom <span class="keyword">and</span> the security of justice.
+<span class="constant">EOS</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>sprintf</code> to interpolate variables into long strings.</li>
+</ul>
 
-it <span class="keyword">do</span>
-  client = <span class="constant">Service::FakeClient</span>.new
-  my_method(client)
+        
+          <div class='highlight'><pre>right = <span class="string">"%s thinks that %s should %s"</span> % [
+  long_variable_one,
+  long_variable_two,
+  long_variable_three
+]
 
-  expect(client.echoes).to eq([<span class="string">'hello'</span>])
+wrong = <span class="string">"<span class="subst">#{long_variable_one}</span> thinks that <span class="subst">#{long_variable_two}</span> should <span class="subst">#{long_variable_three}</span>"</span></pre></div>
+        
+      
+        
+        <ul>
+<li>One line per method for long chains.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = (<span class="number">1</span>..<span class="number">10</span>)
+  .map {|x| x + <span class="number">1</span> }
+  .select(&amp;<span class="symbol">:odd?</span>)
+
+wrong = (<span class="number">1</span>..<span class="number">10</span>).map {|x| x + <span class="number">1</span> }.select(&amp;<span class="symbol">:odd?</span>)</pre></div>
+        
+      
+        
+        <h2>Methods</h2>
+<ul>
+<li>Use a single line for trivial methods.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span>;</span> <span class="variable">@right</span> ||= [] <span class="keyword">end</span>
+
+<span class="function"><span class="keyword">def</span> <span class="title">wrong</span></span>
+  <span class="variable">@right</span> ||= []
 <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>_</code> for ignored arguments.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span><span class="params">(x, <span class="number">_</span>)</span>;</span> x <span class="keyword">end</span>
+<span class="function"><span class="keyword">def</span> <span class="title">wrong</span><span class="params">(x, y)</span>;</span> x <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>*_</code> when all arguments are ignored.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span><span class="params">(*<span class="number">_</span>)</span>;</span> <span class="number">42</span> <span class="keyword">end</span>
+<span class="function"><span class="keyword">def</span> <span class="title">wrong</span><span class="params">(<span class="number">_</span>, <span class="number">_</span>)</span>;</span> <span class="number">42</span> <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Use parenthesis when assigning return value, omit otherwise.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>x = right(<span class="number">42</span>)
+x = wrong <span class="number">42</span>
+
+right <span class="number">42</span>
+wrong(<span class="number">42</span>)</pre></div>
         
       
         
@@ -560,12 +491,196 @@ wrong = velocity * time + <span class="number">0</span>.<span class="number">5</
         
         <ul>
 <li>Use modules or classes for namespacing rather than suffixes, except when
-necessarily following Rails conventions.</li>
+necessarily following <a href="http://rubyonrails.org/">Rails</a> conventions.</li>
 </ul>
 
         
           <div class='highlight'><pre><span class="constant">Example::Right</span>
 <span class="constant">WrongExample</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Avoid double namespacing.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = bird.name
+wrong = bird.bird_name</pre></div>
+        
+      
+        
+        <h2>Regexes</h2>
+<ul>
+<li>Make with <code>%r{}</code> when escaping of slashes would otherwise be required.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = %r{<span class="regexp">/some/path</span>}
+wrong = <span class="regexp">/\/some\/path/</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>\A</code> and <code>\z</code> rather than &#39;^&#39; and <code>$</code> for start and end of line
+matching.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = <span class="string">"hello\nthere"</span> =~ <span class="regexp">/\Ahello\z/</span>
+wrong = <span class="string">"hello\nthere"</span> =~ <span class="regexp">/^hello$/</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Use <code>String#[]</code> for extraction.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = <span class="string">"http://example.com"</span>[%r{\<span class="constant">A</span>(http(s)?)<span class="symbol">://</span>}, <span class="number">1</span>]
+wrong = %r{(http(s)?)<span class="symbol">://</span>}.match(<span class="string">"http://"</span>)[<span class="number">1</span>]</pre></div>
+        
+      
+        
+        <h2>Whitespace</h2>
+<ul>
+<li>No trailing whitespace.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/vimrc#L95">⚙</a></li>
+<li>Two space indentation.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">my_method</span></span>
+  <span class="keyword">if</span> rand &lt; <span class="number">0</span>.<span class="number">5</span>
+    <span class="keyword">if</span> rand &gt; <span class="number">0</span>.<span class="number">5</span>
+      <span class="number">42</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>No indent after <code>private</code> or <code>protected</code> modifiers.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Right</span></span>
+  private
+
+  <span class="function"><span class="keyword">def</span> <span class="title">my_method</span>;</span> <span class="number">42</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">Wrong</span></span>
+  private
+
+    <span class="function"><span class="keyword">def</span> <span class="title">my_method</span>;</span> <span class="number">42</span> <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Align <code>if</code> blocks with left indent.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = <span class="keyword">if</span> rand &lt; <span class="number">0</span>.<span class="number">5</span>
+  <span class="number">0</span>
+<span class="keyword">else</span>
+  <span class="number">1</span>
+<span class="keyword">end</span>
+
+wrong = <span class="keyword">if</span> rand &lt; <span class="number">0</span>.<span class="number">5</span>
+          <span class="number">0</span>
+        <span class="keyword">else</span>
+          <span class="number">1</span>
+        <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Align 1.8 style hashes along hash rocket.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = {
+  <span class="string">'a'</span>   =&gt; <span class="number">1</span>,
+  <span class="string">'ab'</span>  =&gt; <span class="number">2</span>,
+  <span class="string">'abc'</span> =&gt; <span class="number">3</span>,
+}
+
+wrong = {
+  <span class="string">'a'</span> =&gt; <span class="number">1</span>,
+  <span class="string">'ab'</span> =&gt; <span class="number">2</span>,
+  <span class="string">'abc'</span> =&gt; <span class="number">3</span>,
+}</pre></div>
+        
+      
+        
+        <ul>
+<li>Align 1.9 style hashes along right-hand side.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = {
+  <span class="symbol">a:</span>   <span class="number">1</span>,
+  <span class="symbol">ab:</span>  <span class="number">2</span>,
+  <span class="symbol">abc:</span> <span class="number">3</span>,
+}
+
+wrong = {
+  <span class="symbol">a:</span> <span class="number">1</span>,
+  <span class="symbol">ab:</span> <span class="number">2</span>,
+  <span class="symbol">abc:</span> <span class="number">3</span>,
+}</pre></div>
+        
+      
+        
+        <ul>
+<li>Align assignment along equals sign.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
+</ul>
+
+        
+          <div class='highlight'><pre>a  = <span class="string">"right"</span>
+ab = <span class="string">"right"</span>
+
+a = <span class="string">"wrong"</span>
+ab = <span class="string">"wrong"</span></pre></div>
+        
+      
+        
+        <ul>
+<li>No space between block brace and parameters.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = [].map {|x| x }
+wrong = [].map { |x| x }</pre></div>
+        
+      
+        
+        <ul>
+<li>No space between method definition name, argument, and bracket.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="function"><span class="keyword">def</span> <span class="title">right</span><span class="params">(x)</span>;</span> <span class="keyword">end</span>
+<span class="function"><span class="keyword">def</span> <span class="title">wrong</span> </span>(x); <span class="keyword">end</span>
+<span class="function"><span class="keyword">def</span> <span class="title">wrong</span><span class="params">( x )</span>;</span> <span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>No space between method call name, argument, and bracket.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right(<span class="number">42</span>)
+wrong (<span class="number">42</span>)
+wrong( <span class="number">42</span> )</pre></div>
         
       
         
