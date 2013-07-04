@@ -17,7 +17,8 @@
           <h1>Ruby Style Guide</h1>
 <p>The personal style guide of <a href="http://xaviershay.com">Xavier Shay</a>. Any
 potential exceptions must be justified and documented. Code examples imply
-more rules than are explicitly labeled.</p>
+more rules than are explicitly labeled. Rules that I often use editor
+features or scripts to apply are notated with ⚙ and a link to details.</p>
 <p>Older code bases should migrate to this style, rather than stay consistent
 with themselves. Style upgrades should be in separate commits from behaviour
 changes.</p>
@@ -25,7 +26,8 @@ changes.</p>
 <a href="http://xaviershay.com/ruby-style-guide"><a href="http://xaviershay.com/ruby-style-guide">http://xaviershay.com/ruby-style-guide</a></a>.</p>
 <h2>Whitespace</h2>
 <ul>
-<li>No trailing whitespace.</li>
+<li>No trailing whitespace.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/vimrc#L95">⚙</a></li>
 <li>Two space indentation.</li>
 </ul>
 
@@ -65,7 +67,8 @@ wrong = <span class="keyword">if</span> rand &lt; <span class="number">0</span>.
       
         
         <ul>
-<li>Align 1.8 style hashes along hash rocket.</li>
+<li>Align 1.8 style hashes along hash rocket.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
 </ul>
 
         
@@ -84,7 +87,8 @@ wrong = {
       
         
         <ul>
-<li>Align 1.9 style hashes along right-hand side.</li>
+<li>Align 1.9 style hashes along right-hand side.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
 </ul>
 
         
@@ -104,7 +108,8 @@ wrong = {
         
         <h2>Line Length</h2>
 <ul>
-<li>80 characters is good enough for anyone.</li>
+<li>80 characters is good enough for anyone.
+<a href="http://vimdoc.sourceforge.net/htmldoc/change.html#gq">⚙</a></li>
 <li>Long URLs are exempt, though consider shortening them.</li>
 <li>Line up method arguments when they do not fit on one line.</li>
 </ul>
@@ -290,6 +295,72 @@ wrong = -&gt;() { }</pre></div>
         
           <div class='highlight'><pre>right = [].map(&amp;<span class="symbol">:length</span>)
 wrong = [].map {|x| x.length }</pre></div>
+        
+      
+        
+        <h2>Assignment</h2>
+<ul>
+<li>Align along equals sign.
+<a href="https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb">⚙</a></li>
+</ul>
+
+        
+          <div class='highlight'><pre>a  = <span class="string">"right"</span>
+ab = <span class="string">"right"</span>
+
+a = <span class="string">"wrong"</span>
+ab = <span class="string">"wrong"</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Prefer using instance variables rather than writer methods in
+constructors.</li>
+</ul>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Right</span></span>
+  attr_writer <span class="symbol">:x</span>, <span class="symbol">:y</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span></span>
+    <span class="variable">@x</span> = []
+    <span class="variable">@y</span> = []
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">Wrong</span></span>
+  attr_writer <span class="symbol">:x</span>, <span class="symbol">:y</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span></span>
+    <span class="keyword">self</span>.x = []
+    <span class="keyword">self</span>.y = []
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Separate assignment from conditionals.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>right = <span class="keyword">true</span>
+<span class="number">42</span> <span class="keyword">if</span> right
+
+<span class="number">42</span> <span class="keyword">if</span> wrong = <span class="keyword">true</span></pre></div>
+        
+      
+        
+        <ul>
+<li>Only use parallel assignment for short variable names or when splitting the
+return value of a method.</li>
+</ul>
+
+        
+          <div class='highlight'><pre>x, y = <span class="string">"right"</span>, <span class="number">42</span>
+long_name_one, long_name_two = right_method
+
+long_name_one, long_name_two = <span class="string">"wrong"</span>, <span class="number">0</span></pre></div>
         
       
         
