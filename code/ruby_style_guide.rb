@@ -2,7 +2,8 @@
 #
 # The personal style guide of [Xavier Shay](http://xaviershay.com). Any
 # potential exceptions must be justified and documented. Code examples imply
-# more rules than are explicitly labeled.
+# more rules than are explicitly labeled. Rules that I often use editor
+# features or scripts to apply are notated with ⚙ and a link to details.
 #
 # Older code bases should migrate to this style, rather than stay consistent
 # with themselves. Style upgrades should be in separate commits from behaviour
@@ -14,6 +15,7 @@
 # ## Whitespace
 #
 # * No trailing whitespace.
+#   [⚙](https://github.com/xaviershay/dotfiles/blob/master/vimrc#L95)
 # * Two space indentation.
 
 def my_method
@@ -39,6 +41,7 @@ wrong = if rand < 0.5
         end
 
 # * Align 1.8 style hashes along hash rocket.
+#   [⚙](https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb)
 
 right = {
   'a'   => 1,
@@ -53,6 +56,7 @@ wrong = {
 }
 
 # * Align 1.9 style hashes along right-hand side.
+#   [⚙](https://github.com/xaviershay/dotfiles/blob/master/bin/format_hash.rb)
 
 right = {
   a:   1,
@@ -69,6 +73,7 @@ wrong = {
 # ## Line Length
 #
 # * 80 characters is good enough for anyone.
+#   [⚙](http://vimdoc.sourceforge.net/htmldoc/change.html#gq)
 # * Long URLs are exempt, though consider shortening them.
 # * Line up method arguments when they do not fit on one line.
 
