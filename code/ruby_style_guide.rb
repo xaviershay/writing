@@ -331,7 +331,7 @@ wrong = bird.bird_name
 right = %r{/some/path}
 wrong = /\/some\/path/
 
-# * Use `\A` and `\z` rather than '^' and `$` for start and end of line
+# * Use `\A` and `\z` rather than `^` and `$` for start and end of line
 #   matching.
 
 right = "hello\nthere" =~ /\Ahello\z/
