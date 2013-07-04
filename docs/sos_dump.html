@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>sos_dump.rb</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>sos_dump.rb</h1>
+        
+
+        
+          <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              
+                
+                <li>
+                  <a class="source" href="1_sos.html">
+                    1_sos.rb
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="2_sos.html">
+                    2_sos.rb
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="ruby_style_guide.html">
+                    ruby_style_guide.rb
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="sos_dump.html">
+                    sos_dump.rb
+                  </a>
+                </li>
+              
+            </ol>
+          </div>
+        
+      </div>
+
+      
+        
+        
+        
+      
+        
+        <p>By these semantics, referencing a variable that does not exist causes an
+error. We could instead and a step to provide a default value (such as
+instance variables in Ruby).
+TODO: How to restrict this (in math) from matching all expressions?</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">ReadVariable</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span></span>
+    [
+      <span class="constant">ReadFromEnv</span>[<span class="keyword">self</span>],
+      <span class="constant">ReduceConstant</span>[<span class="keyword">self</span>, <span class="constant">Number</span>[<span class="number">0</span>]]
+    ]
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">ReadFromEnv</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(exp, env)</span>;</span> env.has_key?(exp.name) <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span></span>
+    <span class="string">'%s ∈ dom(σ)'</span> % expression_type.labels
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">'&lt;%s, σ&gt; → &lt;σ(%s), σ&gt;'</span> % [
+      expression_type.prototype,
+      expression_type.prototype
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">ReduceConstant</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>, <span class="symbol">:constant_exp</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(*<span class="number">_</span>)</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    <span class="constant">Reduction</span>.new(
+      [exp, env],
+      [constant_exp, env],
+      <span class="keyword">self</span>,
+      []
+    )
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">'&lt;%s, σ&gt; → &lt;%s, σ&gt;'</span> % [
+      expression_type.prototype,
+      constant_exp
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">Add</span>[<span class="constant">ReadVariable</span>[<span class="symbol">:a</span>], <span class="constant">ReadVariable</span>[<span class="symbol">:b</span>]], {<span class="symbol">a:</span> <span class="constant">Number</span>[<span class="number">4</span>]}</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

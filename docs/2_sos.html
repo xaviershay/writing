@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>The Mathematical Syntax of Small-step Operational Semantics</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          
+          <h1>The Mathematical Syntax of Small-step Operational Semantics</h1>
+<h2>Working With An Environment</h2>
+<p>Until now, none of our semantic definitions have interacted with the
+environment. In this section we will add some new expression types that do
+so, but before jumping in let&#39;s quickly recap the behaviour we have so far
+added to expressions.</p>
+
+          
+            <div class='highlight'><pre>require_relative <span class="string">'1_sos'</span>
+
+<span class="class"><span class="keyword">module</span> <span class="title">Expression</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">inspect</span>;</span> <span class="string">"«<span class="subst">#{<span class="keyword">self</span>}</span>»"</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">reducible?</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">reduce</span><span class="params">(env)</span></span>
+    rule = <span class="keyword">self</span>.<span class="keyword">class</span>.rules.detect {|r| r.apply?(<span class="keyword">self</span>) }
+    rule.apply(<span class="keyword">self</span>, env)
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">included</span><span class="params">(klass)</span></span>
+    klass.instance_eval <span class="keyword">do</span>
+      <span class="function"><span class="keyword">def</span> <span class="title">rules</span>;</span>     [] <span class="keyword">end</span>
+      <span class="function"><span class="keyword">def</span> <span class="title">labels</span>;</span>    [] <span class="keyword">end</span>
+      <span class="function"><span class="keyword">def</span> <span class="title">prototype</span>;</span> new(*labels) <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+          
+        
+
+        
+          <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              
+                
+                <li>
+                  <a class="source" href="1_sos.html">
+                    1_sos.rb
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="2_sos.html">
+                    2_sos.rb
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="ruby_style_guide.html">
+                    ruby_style_guide.rb
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="sos_dump.html">
+                    sos_dump.rb
+                  </a>
+                </li>
+              
+            </ol>
+          </div>
+        
+      </div>
+
+      
+        
+        <p>We have ways to:</p>
+<ul>
+<li>Display a specific instance of expression.</li>
+<li>Evaluate that instance.</li>
+<li>Display a meta-instance of the expression for use in the mathematical
+notation (the &quot;prototype&quot;).</li>
+</ul>
+<p>All expressions going forward will share this behaviour.</p>
+<p>The simplest expression that can be built to interact with the environment is
+one to read a value out of it.</p>
+
+        
+          <div class='highlight'><pre><span class="constant">ReadVariable</span> = <span class="constant">Struct</span>.new(<span class="symbol">:name</span>) <span class="keyword">do</span>
+  <span class="keyword">include</span> <span class="constant">Expression</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span> name.to_s <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span>;</span>  [ <span class="constant">ReadFromEnv</span>[<span class="keyword">self</span>] ] <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">labels</span>;</span> [<span class="symbol">:x</span>] <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">ReadFromEnv</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(*<span class="number">_</span>)</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    <span class="constant">Reduction</span>[
+      <span class="constant">Program</span>[ exp, env ],
+      <span class="constant">Program</span>[ env.fetch(exp.name), env ],
+      <span class="keyword">self</span>, []
+    ]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">'&lt;%s, σ&gt; → &lt;σ(%s), σ&gt;'</span> % [
+      expression_type.prototype,
+      expression_type.prototype
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span></span>
+    <span class="string">'if %s ∈ dom(σ)'</span> % expression_type.labels
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">ReadVariable</span>[<span class="symbol">:a</span>], {<span class="symbol">a:</span> <span class="constant">Number</span>[<span class="number">4</span>]}</pre></div>
+        
+      
+        
+        <pre><code>«a», a:«4» | &lt;x, σ&gt; → &lt;σ(x), σ&gt; if x ∈ dom(σ)
+«4», a:«4» |</code></pre>
+<p>There is some new notation here. Recall that <code>σ</code> refers to the environment.
+<code>σ(x)</code> means <em>fetch the value for <code>x</code> from the environment</em>, <code>dom(σ)</code> refers
+to the names of everything in the environment (the <em>domain</em>), and <code>x ∈</code> means
+<em><code>x</code> is an element of</em>.</p>
+<p>It is tempting to take the <em><code>x</code> is in the domain</em> clause for granted, but
+spelling it out here to makes it clear that it does not apply to any
+arbitrary expression. The clause adds clarity as to what the variables in the
+notation are.</p>
+<p>Combining them together, a sentence for the full notation reads <em>the
+expression <code>x</code> reduces to the value of <code>x</code> in the environment, given <code>x</code>
+is the name of something in the environment</em>.</p>
+<p>Our current semantics does not restrict the types of things that can be
+stored in an environment. This allows some interesting exucutions, such as if
+you store an expression rather than a number. This type of behaviour is not
+usually well-defined without a good semantics!</p>
+
+        
+          <div class='highlight'><pre>evaluate <span class="constant">Add</span>[ <span class="constant">ReadVariable</span>[<span class="symbol">:a</span>], <span class="constant">Number</span>[<span class="number">2</span>] ], {<span class="symbol">a:</span> <span class="constant">Add</span>[ <span class="constant">Number</span>[<span class="number">4</span>], <span class="constant">Number</span>[<span class="number">3</span>] ]}</pre></div>
+        
+      
+        
+        <pre><code>«a + 2», a:«4 + 3»       | &lt;x, σ&gt; → &lt;x&#39;, σ&gt; : &lt;x + y, σ&gt; → &lt;x&#39; + y, σ&gt;
+  «a», a:«4 + 3»         | &lt;x, σ&gt; → &lt;σ(x), σ&gt; if x ∈ dom(σ)
+  «4 + 3», a:«4 + 3»     |
+«(4 + 3) + 2», a:«4 + 3» | &lt;x, σ&gt; → &lt;x&#39;, σ&gt; : &lt;x + y, σ&gt; → &lt;x&#39; + y, σ&gt;
+  «4 + 3», a:«4 + 3»     | &lt;x + y, σ&gt; → &lt;z, σ&gt; if z is the sum of x and y
+  «7», a:«4 + 3»         |
+«7 + 2», a:«4 + 3»       | &lt;x + y, σ&gt; → &lt;z, σ&gt; if z is the sum of x and y
+«9», a:«4 + 3»           |</code></pre>
+<h3>Writing</h3>
+<p>Introducing an expression to change the environment poses an interesting
+question: what should that expression itself reduce to? Three readily come to
+mind:</p>
+<ul>
+<li>Itself, ensuring that if the value is already in the environment it applies
+an identity transform.</li>
+<li>A new type of terminal expression (such as <code>null</code>).</li>
+<li>The value that it puts into the environment.</li>
+</ul>
+<p>The first would need a change to the concept of <code>reducible?</code>. Currently it is
+constant with respect to the type of expression, but could be changed to
+either take into account the environment or to collapse the concept entirely
+into <code>reduce</code> and be determined implicitly (i.e. if an expression does not
+reduce to itself then it is reducible). This is an interesting exercise, but
+somewhat of a tangent. We will revisit it later.</p>
+<p>Instead, we will start with the second approach and introduce a null value
+before investigating the third.</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Null</span></span>
+  <span class="keyword">include</span> <span class="constant">Value</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span> <span class="string">'∅'</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">WriteVariable</span> = <span class="constant">Struct</span>.new(<span class="symbol">:name</span>, <span class="symbol">:value</span>) <span class="keyword">do</span>
+  <span class="keyword">include</span> <span class="constant">Expression</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span> <span class="string">"%s = %s"</span> % [name, value] <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span>;</span>  [ <span class="constant">WriteToEnv</span>[<span class="keyword">self</span>] ] <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">labels</span>;</span> [<span class="symbol">:x</span>, <span class="symbol">:v</span>] <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">WriteToEnv</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(*<span class="number">_</span>)</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    <span class="constant">Reduction</span>[
+      <span class="constant">Program</span>[ exp, env ],
+      <span class="constant">Program</span>[ <span class="constant">Null</span>[], env.merge(exp.name =&gt; exp.value) ],
+      <span class="keyword">self</span>, []
+    ]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">'&lt;%s, σ&gt; → &lt;%s, σ[%s ↦ %s]&gt;'</span> % [
+      expression_type.prototype,
+      <span class="constant">Null</span>[],
+      *expression_type.labels
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">WriteVariable</span>[<span class="symbol">:a</span>, <span class="constant">Number</span>[<span class="number">3</span>]]</pre></div>
+        
+      
+        
+        <pre><code>«a = 3»    | &lt;x = v, σ&gt; → &lt;∅, σ[x ↦ v]&gt;
+«∅», a:«3» |</code></pre>
+<p>The only new notation here is <code>↦</code>, which simply puts a new entry into the
+environment.  As expected, returning null prevents variable assignment from
+being nested inside other expressions.</p>
+
+        
+          <div class='highlight'><pre>evaluate <span class="constant">Add</span>[ <span class="constant">WriteVariable</span>[<span class="symbol">:a</span>, <span class="constant">Number</span>[<span class="number">3</span>]], <span class="constant">Number</span>[<span class="number">2</span>] ]</pre></div>
+        
+      
+        
+        <pre><code>«(a = 3) + 2» | &lt;x, σ&gt; → &lt;x&#39;, σ&gt; : &lt;x + y, σ&gt; → &lt;x&#39; + y, σ&gt;
+  «a = 3»     | &lt;x = v, σ&gt; → &lt;∅, σ[x ↦ v]&gt;
+  «∅», a:«3»  |
+«∅ + 2»       | undefined method `value&#39; for «∅»:Null</code></pre>
+<p>Under these semantics a value can be set in the environment, but there is no
+way to ever use it! A <em>sequence</em> expression that enables expressions to be reduced one after the other will allow these variables to be used.</p>
+
+        
+          <div class='highlight'><pre><span class="constant">Sequence</span> = <span class="constant">Struct</span>.new(<span class="symbol">:left</span>, <span class="symbol">:right</span>) <span class="keyword">do</span>
+  <span class="keyword">include</span> <span class="constant">Expression</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span>;</span> <span class="string">"%s; %s"</span> % [left, right] <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span></span>
+    [
+      <span class="constant">ReduceArgumentWithEnv</span>[<span class="keyword">self</span>, <span class="number">0</span>],
+      <span class="constant">ReduceArgumentWithEnv</span>[<span class="keyword">self</span>, <span class="number">1</span>],
+      <span class="constant">SelectArgument</span>[<span class="keyword">self</span>, <span class="number">1</span>]
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">labels</span>;</span> [<span class="symbol">:x</span>, <span class="symbol">:y</span>] <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div>
+        
+      
+        
+        <p>A sequence expression first reduces each of its sub-expressions, before
+throwing away the first one and returning the second. The previous argument
+reduction we used for addition is insufficient, since it does not allow the
+environment to be changed.</p>
+
+        
+          <div class='highlight'><pre><span class="constant">ReduceArgumentWithEnv</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>, <span class="symbol">:n</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(exp)</span>;</span> exp[n].reducible?  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    sub_reduction = <span class="keyword">nil</span>
+    new_env       = env
+
+    sub_exps = exp.each.map.with_index {|sub_exp, i|
+      <span class="keyword">if</span> i == n
+        sub_reduction = sub_exp.reduce(env)
+        new_env       = sub_reduction.to.env
+        sub_reduction.to.exp
+      <span class="keyword">else</span>
+        sub_exp
+      <span class="keyword">end</span>
+    }
+
+    <span class="constant">Reduction</span>[
+      <span class="constant">Program</span>[ exp, env ],
+      <span class="constant">Program</span>[ expression_type.new(*sub_exps), new_env ],
+      <span class="keyword">self</span>, [sub_reduction]
+    ]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span></span>
+    label = expression_type.labels[n]
+    <span class="string">"&lt;%s, σ&gt; → &lt;%s, σ'&gt;"</span> % [label, <span class="string">"<span class="subst">#{label}</span>'"</span>]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">"&lt;%s, σ&gt; → &lt;%s, σ'&gt;"</span> % [
+      expression_type.prototype,
+      expression_type.new(*expression_type.labels.map.with_index {|label, i|
+        i == n ? <span class="string">"<span class="subst">#{label}</span>'"</span> <span class="symbol">:</span> label
+      })
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">SelectArgument</span> = <span class="constant">Struct</span>.new(<span class="symbol">:expression_type</span>, <span class="symbol">:n</span>) <span class="keyword">do</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply?</span><span class="params">(*<span class="number">_</span>)</span>;</span> <span class="keyword">true</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    <span class="constant">Reduction</span>[
+      <span class="constant">Program</span>[ exp, env ],
+      <span class="constant">Program</span>[ exp[n], env ],
+      <span class="keyword">self</span>, []
+    ]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">antecedent</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">"&lt;%s, σ&gt; → &lt;%s, σ&gt;"</span> % [
+      expression_type.prototype,
+      expression_type.labels[n]
+    ]
+  <span class="keyword">end</span>
+  <span class="function"><span class="keyword">def</span> <span class="title">clause</span>;</span> <span class="string">''</span> <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">Sequence</span>[ <span class="constant">WriteVariable</span>[<span class="symbol">:a</span>, <span class="constant">Number</span>[<span class="number">3</span>]], <span class="constant">ReadVariable</span>[<span class="symbol">:a</span>] ]</pre></div>
+        
+      
+        
+        <pre><code>«a = 3; a»    | &lt;x, σ&gt; → &lt;x&#39;, σ&#39;&gt; : &lt;x; y, σ&gt; → &lt;x&#39;; y, σ&#39;&gt;
+  «a = 3»     | &lt;x = v, σ&gt; → &lt;∅, σ[x ↦ v]&gt;
+  «∅», a:«3»  |
+«∅; a», a:«3» | &lt;y, σ&gt; → &lt;y&#39;, σ&#39;&gt; : &lt;x; y, σ&gt; → &lt;x; y&#39;, σ&#39;&gt;
+  «a», a:«3»  | &lt;x, σ&gt; → &lt;σ(x), σ&gt; if x ∈ dom(σ)
+  «3», a:«3»  |
+«∅; 3», a:«3» | &lt;x; y, σ&gt; → &lt;y, σ&gt;
+«3», a:«3»    |</code></pre>
+<p>The notation introduced here does not contain any new concepts, and is
+hopefully starting to become familiar.</p>
+<p>What happens if instead of reducing to null, writing to the environment
+reduces the value being written instead? Writes could then be nested inside
+other expressions.</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">WriteToEnv</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">apply</span><span class="params">(exp, env)</span></span>
+    <span class="constant">Reduction</span>[
+      <span class="constant">Program</span>[ exp, env ],
+      <span class="constant">Program</span>[ exp.value, env.merge(exp.name =&gt; exp.value) ],
+      <span class="keyword">self</span>, []
+    ]
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    <span class="string">'&lt;%s, σ&gt; → &lt;%s, σ[%s ↦ %s]&gt;'</span> % [
+      expression_type.prototype,
+      expression_type.labels[<span class="number">1</span>],
+      *expression_type.labels
+    ]
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">Add</span>[ <span class="constant">WriteVariable</span>[<span class="symbol">:a</span>, <span class="constant">Number</span>[<span class="number">3</span>]], <span class="constant">ReadVariable</span>[<span class="symbol">:a</span>] ]</pre></div>
+        
+      
+        
+        <pre><code>«(a = 3) + a» | &lt;x, σ&gt; → &lt;x&#39;, σ&gt; : &lt;x + y, σ&gt; → &lt;x&#39; + y, σ&gt;
+  «a = 3»     | &lt;x = v, σ&gt; → &lt;v, σ[x ↦ v]&gt;
+  «3», a:«3»  |
+«3 + a»       | key not found: :a</code></pre>
+<p>It doesn&#39;t work! As alluded to earlier, add is using the returned value, but
+throwing away the new environment. That is why we needed to implement a new
+reduce with environment rule. Small-step operational semantics does not let
+anything slip through the cracks! Updating add to use the new reduce with
+argument step that sequence uses fixes the issue.</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Add</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title"><span class="keyword">self</span></span>.<span class="title">rules</span></span>
+    [
+      <span class="constant">ReduceArgumentWithEnv</span>[<span class="keyword">self</span>, <span class="number">0</span>],
+      <span class="constant">ReduceArgumentWithEnv</span>[<span class="keyword">self</span>, <span class="number">1</span>],
+      <span class="constant">AddValues</span>[<span class="keyword">self</span>]
+    ]
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+evaluate <span class="constant">Add</span>[ <span class="constant">WriteVariable</span>[<span class="symbol">:a</span>, <span class="constant">Number</span>[<span class="number">3</span>]], <span class="constant">ReadVariable</span>[<span class="symbol">:a</span>] ]</pre></div>
+        
+      
+        
+        <pre><code>«(a = 3) + a»  | &lt;x, σ&gt; → &lt;x&#39;, σ&#39;&gt; : &lt;x + y, σ&gt; → &lt;x&#39; + y, σ&#39;&gt;
+  «a = 3»      | &lt;x = v, σ&gt; → &lt;v, σ[x ↦ v]&gt;
+  «3», a:«3»   |
+«3 + a», a:«3» | &lt;y, σ&gt; → &lt;y&#39;, σ&#39;&gt; : &lt;x + y, σ&gt; → &lt;x + y&#39;, σ&#39;&gt;
+  «a», a:«3»   | &lt;x, σ&gt; → &lt;σ(x), σ&gt; if x ∈ dom(σ)
+  «3», a:«3»   |
+«3 + 3», a:«3» | &lt;x + y, σ&gt; → &lt;z, σ&gt; if z is the sum of x and y
+«6», a:«3»     |</code></pre>
+<p>This also demonstrates the impact of our earlier decision to evaluate
+addition reduction left to right. Under right to left semantics, the above
+program would not execute since <code>a</code> would not be defined.</p>
+
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

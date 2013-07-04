@@ -6,7 +6,7 @@ set -ex
 
 git checkout gh-pages
 git merge master
-docco -l linear code/**/*.rb
+docco -l linear code/ruby_style_guide.rb
 git add .
 git commit -m "Updating docs."
 git push origin HEAD
