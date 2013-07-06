@@ -188,7 +188,7 @@ right = {
   b: 2,
 }
 
-right = {
+wrong = {
   a: 1,
   b: 2
 }
