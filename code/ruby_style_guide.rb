@@ -281,9 +281,9 @@ end
 def right(x, _); x end
 def wrong(x, y); x end
 
-# * Use `*_` when all arguments are ignored.
+# * Use `*` when all arguments are ignored.
 
-def right(*_); 42 end
+def right(*); 42 end
 def wrong(_, _); 42 end
 
 # * Use parenthesis when assigning return value, omit otherwise.
