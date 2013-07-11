@@ -27,10 +27,17 @@ wrong = [
   2
 ]
 
-# * Prefer `%w()` for construction of string arrays.
+# * Prefer `%w[]` for construction of string arrays.
 
-right = %w(apples oranges)
+right = %w[apples oranges]
+wrong = %w(apples oranges)
 wrong = ['apples', 'oranges']
+
+# * Prefer `%i[]` for construction of symbol arrays. (Ruby >= 2.0 only)
+
+right = %i[apples oranges grapes mangoes]
+wrong = [:apples, :oranges, :grapes, :mangoes]
+
 
 # ## Assignment
 #
@@ -55,12 +62,19 @@ class Wrong
   end
 end
 
-# * Separate assignment from conditionals.
+# * Prefer separating assignment from conditionals.
 
 right = true
 42 if right
 
 42 if wrong = true
+
+# * If using an assignment as a boolean value in a conditional,
+#   enclose in parentheses to indicate it's not a = vs == typo.
+
+if (right = big_calculation)
+if wrong = big_calculation
+if right == big_calculation
 
 # * Only use parallel assignment for short variable names or when splitting the
 #   return value of a method.
@@ -153,6 +167,24 @@ wrong = flag && other_flag ? long_name_one : long_name_two
 right if a && b
 wrong if a and b
 
+# ## Working around nil values
+#
+# * Prefer || to ternary for default value
+
+right(possibly_nil_value || default_value)
+wrong(possibly_nil_value ? possibly_nil_value : default_value)
+
+# * Prefer ||= for memoization
+
+right ||= big_calculation
+wrong = big_calculation unless wrong
+
+# * Prefer && for nil guards
+
+right = object && object.name
+wrong = object ? object.name : nil
+wrong = object.name if object
+
 # ## Dependencies
 #
 # * Explicitly require third-party code in each file it is used.
@@ -221,6 +253,25 @@ wrong({a: 1})
 right = {}.fetch(:a, 0)
 wrong = {}[:a] || 0
 
+# ## Enumeration
+#
+# * Prefer /ect$/ enumeration methods to lispy aliases
+
+right.collect { ... }
+wrong.map     { ... }
+
+right.inject(seed) { ... }
+wrong.reduce(seed) { ... }
+
+right.detect { ... }
+wrong.find   { ... }
+
+right.select   { ... }
+wrong.find_all { ... }
+
+right.reject { ... }
+wrong.there_is_no_wrong_way_to_reject { ... }
+
 # ## Line Length
 #
 # * 80 characters is good enough for anyone.
@@ -268,11 +319,22 @@ wrong = (1..10).map {|x| x + 1 }.select(&:odd?)
 
 # ## Methods
 #
-# * Use a single line for trivial methods.
+# * Use parentheses to enclose parameters in method definitions
 
-def right; @right ||= [] end
+def right(*args)
 
-def wrong
+def wrong *args
+
+# * Use a single line for blocks of trivial methods, but not single ones.
+
+def top;    @top    ||= @rect.top    end
+def right;  @right  ||= @rect.right  end
+def bottom; @bottom ||= @rect.bottom end
+def left;   @left   ||= @rect.left   end
+
+def wrong; @right ||= [] end
+
+def right
   @right ||= []
 end
 
@@ -286,13 +348,28 @@ def wrong(x, y); x end
 def right(*); 42 end
 def wrong(_, _); 42 end
 
-# * Use parenthesis when assigning return value, omit otherwise.
+# * Prefer using parentheses to send messages with arguments.
 
-x = right(42)
-x = wrong 42
+object.right(17, 23)
+object.wrong 17, 23
 
-right 42
-wrong(42)
+# * Uses parentheses to send messages with arguments when consuming return value.
+
+puts right(42)
+puts wrong 42
+
+#   Omit parentheses when message has no arguments
+
+object.right
+object.wrong()
+
+#   Omit parentheses for DSLs or readability when the method has no interesting return value
+
+do_the :right thing
+do_the(:wrong thing)
+
+puts right
+puts(ymmv)
 
 # ## Naming
 #
