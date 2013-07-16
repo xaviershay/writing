@@ -33,7 +33,7 @@ right = %w[apples oranges]
 wrong = %w(apples oranges)
 wrong = ['apples', 'oranges']
 
-# * Prefer `%i[]` for construction of symbol arrays. (Ruby >= 2.0 only)
+# * Prefer `%i[]` for construction of symbol arrays.
 
 right = %i[apples oranges grapes mangoes]
 wrong = [:apples, :oranges, :grapes, :mangoes]
