@@ -255,17 +255,18 @@ wrong = {}[:a] || 0
 
 # ## Enumeration
 #
-# * Prefer /ect$/ enumeration methods to lispy aliases
+# * Prefer lisp-style enumeration methods.
 
-right.collect { ... }
-wrong.map     { ... }
+right.map     { ... }
+wrong.collect { ... }
 
-right.inject(seed) { ... }
-wrong.reduce(seed) { ... }
+right.reduce(seed) { ... }
+wrong.inject(seed) { ... }
 
+right.find   { ... }
 right.detect { ... }
-wrong.find   { ... }
 
+# Select is an exception for symmetry with `reject`.
 right.select   { ... }
 wrong.find_all { ... }
 
@@ -322,20 +323,20 @@ wrong = (1..10).map {|x| x + 1 }.select(&:odd?)
 # * Use parentheses to enclose parameters in method definitions
 
 def right(*args)
+end
 
 def wrong *args
+end
 
-# * Use a single line for blocks of trivial methods, but not single ones.
+# * Use a single line for blocks of trivial methods.
 
 def top;    @top    ||= @rect.top    end
 def right;  @right  ||= @rect.right  end
 def bottom; @bottom ||= @rect.bottom end
 def left;   @left   ||= @rect.left   end
 
-def wrong; @right ||= [] end
-
-def right
-  @right ||= []
+def wrong
+  @wrong ||= []
 end
 
 # * Use `_` for ignored arguments.
@@ -358,18 +359,18 @@ object.wrong 17, 23
 puts right(42)
 puts wrong 42
 
-#   Omit parentheses when message has no arguments
+# * Omit parentheses when message has no arguments
 
 object.right
 object.wrong()
 
-#   Omit parentheses for DSLs or readability when the method has no interesting return value
+# * Omit parentheses for DSLs or readability when the method has no interesting return value
 
-do_the :right thing
-do_the(:wrong thing)
+do_the right thing
+do_the(wrong thing)
 
-puts right
-puts(ymmv)
+puts :right
+puts(:ymmv)
 
 # ## Naming
 #
