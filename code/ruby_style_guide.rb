@@ -69,8 +69,8 @@ right = true
 
 42 if wrong = true
 
-# * If using an assignment as a boolean value in a conditional,
-#   enclose in parentheses to indicate it's not a = vs == typo.
+# * If using an assignment as a boolean value in a conditional, enclose in
+#   parentheses to indicate it's not a `=` vs `==` typo.
 
 if (right = big_calculation)
 if wrong = big_calculation
@@ -167,24 +167,6 @@ wrong = flag && other_flag ? long_name_one : long_name_two
 right if a && b
 wrong if a and b
 
-# ## Working around nil values
-#
-# * Prefer || to ternary for default value
-
-right(possibly_nil_value || default_value)
-wrong(possibly_nil_value ? possibly_nil_value : default_value)
-
-# * Prefer ||= for memoization
-
-right ||= big_calculation
-wrong = big_calculation unless wrong
-
-# * Prefer && for nil guards
-
-right = object && object.name
-wrong = object ? object.name : nil
-wrong = object.name if object
-
 # ## Dependencies
 #
 # * Explicitly require third-party code in each file it is used.
@@ -260,14 +242,13 @@ wrong = {}[:a] || 0
 right.map     { ... }
 wrong.collect { ... }
 
-right.reduce(seed) { ... }
-wrong.inject(seed) { ... }
+right.reduce { ... }
+wrong.inject { ... }
 
 right.find   { ... }
 right.detect { ... }
 
-# Select is an exception for symmetry with `reject`.
-right.select   { ... }
+right.select   { ... } # Select is an exception for symmetry with `reject`.
 wrong.find_all { ... }
 
 right.reject { ... }
@@ -320,7 +301,7 @@ wrong = (1..10).map {|x| x + 1 }.select(&:odd?)
 
 # ## Methods
 #
-# * Use parentheses to enclose parameters in method definitions
+# * Use parentheses to enclose parameters in method definitions.
 
 def right(*args)
 end
@@ -354,17 +335,17 @@ def wrong(_, _); 42 end
 object.right(17, 23)
 object.wrong 17, 23
 
-# * Uses parentheses to send messages with arguments when consuming return value.
+# * Uses parentheses when using return value of a call.
 
 puts right(42)
 puts wrong 42
 
-# * Omit parentheses when message has no arguments
+# * Omit parentheses when message has no arguments.
 
 object.right
 object.wrong()
 
-# * Omit parentheses for DSLs or readability when the method has no interesting return value
+# * Omit parentheses for DSLs when the return value is not used.
 
 do_the right thing
 do_the(wrong thing)
@@ -374,8 +355,7 @@ puts(:ymmv)
 
 # ## Naming
 #
-# * Use short variable names for short blocks where it is obvious what the
-#   variable is.
+# * Use short variable names for simple and obvious blocks.
 
 right = bird_names.map {|x| x.to_s.length }
 wrong = bird_names.map {|bird_name| bird_name.to_s.length }
@@ -401,6 +381,24 @@ WrongExample
 
 right = bird.name
 wrong = bird.bird_name
+
+# ## Nil values
+#
+# * Prefer `||` to ternary for default values.
+
+right(possibly_nil_value || default_value)
+wrong(possibly_nil_value ? possibly_nil_value : default_value)
+
+# * Prefer `||=` for memoization.
+
+right ||= big_calculation
+wrong = big_calculation unless wrong
+
+# * Prefer `&&` for nil guards.
+
+right = object && object.name
+wrong = object ? object.name : nil
+wrong = object.name if object
 
 # ## Regexes
 #
