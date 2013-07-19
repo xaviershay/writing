@@ -246,7 +246,7 @@ right.reduce { ... }
 wrong.inject { ... }
 
 right.find   { ... }
-right.detect { ... }
+wrong.detect { ... }
 
 right.select   { ... } # Select is an exception for symmetry with `reject`.
 wrong.find_all { ... }
