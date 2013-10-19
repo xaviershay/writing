@@ -2,6 +2,10 @@ ul {
   margin: 0
 }
 
+.more-info {
+  margin-left: 0.2em;
+}
+
 li li {
   font-size: 80%;
   list-style: square;

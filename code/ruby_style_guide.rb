@@ -27,8 +27,8 @@ wrong = [
   2
 ]
 
-# * Prefer `%w[]` for construction of string arrays.
-#     * They're easier to write, and harder to mess up syntactically.
+# * Prefer `%w[]` for construction of string arrays. It is easier to write,
+#   and harder to mess up syntactically.
 
 right = %w[apples oranges]
 wrong = %w(apples oranges)
@@ -163,8 +163,8 @@ end
 
 wrong = flag && other_flag ? long_name_one : long_name_two
 
-# * Use `&&` and `||` in preference to `and` and `or`.
-#     * `and` and `or` have looser precedence and can lead to unexpected bugs
+# * Use `&&` and `||` in preference to `and` and `or`. The latter have looser
+#   precedence and often lead to unexpected bugs.
 
 right if a && b
 wrong if a and b
