@@ -2,6 +2,15 @@ ul {
   margin: 0
 }
 
+li li {
+  font-size: 80%;
+  list-style: square;
+}
+
+li li a {
+  display: none;
+}
+
 .footer-link {
   text-align: center;
   font-size: 80%;
