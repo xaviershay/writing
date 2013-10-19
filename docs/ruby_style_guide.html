@@ -49,7 +49,10 @@ wrong = [
       
         
         <ul>
-<li>Prefer <code>%w[]</code> for construction of string arrays.</li>
+<li>Prefer <code>%w[]</code> for construction of string arrays.<ul>
+<li>They&#39;re easier to write, and harder to mess up syntactically.</li>
+</ul>
+</li>
 </ul>
 
         
@@ -171,7 +174,7 @@ wrong = -&gt;() { }</pre></div>
       
         
         <ul>
-<li>Prefer <code>Symbol#to_proc</code> where applicable.</li>
+<li>Prefer <code>Symbol#to_proc</code> (the &amp;preztel operator) where applicable.</li>
 </ul>
 
         
@@ -259,7 +262,10 @@ wrong = flag &amp;&amp; other_flag ? long_name_one <span class="symbol">:</span>
       
         
         <ul>
-<li>Use <code>&amp;&amp;</code> and <code>||</code> in preference to <code>and</code> and <code>or</code>.</li>
+<li>Use <code>&amp;&amp;</code> and <code>||</code> in preference to <code>and</code> and <code>or</code>.<ul>
+<li><code>and</code> and <code>or</code> have looser precedence and can lead to unexpected bugs</li>
+</ul>
+</li>
 </ul>
 
         
@@ -429,7 +435,7 @@ wrong.there_is_no_wrong_way_to_reject { ... }</pre></div>
       
         
         <ul>
-<li>Use <code>sprintf</code> to interpolate variables into long strings.</li>
+<li>Use <code>sprintf</code> (the <code>%</code> operator) to interpolate variables into long strings.</li>
 </ul>
 
         
