@@ -7,7 +7,12 @@ $(function() {
       return false
     })
 
-    elem.prev('ul').find('li:last-child').append(' ').append(link)
+    var list = elem.prev('div > ul').find('li:first-child');
+    if ($('ul', list).length > 0) {
+      link.insertBefore($('ul', list));
+    } else {
+      list.append(link);
+    }
   }).hide();
 
   var canonical = $('#canonical-link').attr('href')
