@@ -28,6 +28,7 @@ wrong = [
 ]
 
 # * Prefer `%w[]` for construction of string arrays.
+#     * They're easier to write, and harder to mess up syntactically.
 
 right = %w[apples oranges]
 wrong = %w(apples oranges)
@@ -107,7 +108,7 @@ wrong = lambda {|x| x }
 right = ->{ }
 wrong = ->() { }
 
-# * Prefer `Symbol#to_proc` where applicable.
+# * Prefer `Symbol#to_proc` (the &preztel operator) where applicable.
 
 right = [].map(&:length)
 wrong = [].map {|x| x.length }
@@ -163,6 +164,7 @@ end
 wrong = flag && other_flag ? long_name_one : long_name_two
 
 # * Use `&&` and `||` in preference to `and` and `or`.
+#     * `and` and `or` have looser precedence and can lead to unexpected bugs
 
 right if a && b
 wrong if a and b
@@ -281,7 +283,7 @@ end
   give us upon demand the riches of freedom and the security of justice.
 EOS
 
-# * Use `sprintf` to interpolate variables into long strings.
+# * Use `sprintf` (the `%` operator) to interpolate variables into long strings.
 
 right = "%s thinks that %s should %s" % [
   long_variable_one,
