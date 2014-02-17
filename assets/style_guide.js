@@ -7,7 +7,7 @@ $(function() {
       return false
     })
 
-    var list = elem.prev('div > ul').find('li:first-child');
+    var list = elem.prev('div > ul').find('li:last-child');
     if ($('ul', list).length > 0) {
       link.insertBefore($('ul', list));
     } else {
